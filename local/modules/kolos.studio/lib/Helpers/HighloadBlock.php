@@ -1,6 +1,6 @@
 <?php
 
-namespace KolosStudio\Helpers;
+namespace Kolos\Studio\Helpers;
 
 use Bitrix\Highloadblock\HighloadBlockTable;
 use Bitrix\Main\SystemException;

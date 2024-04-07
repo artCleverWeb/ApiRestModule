@@ -2,7 +2,9 @@
 
 /** @const HL_TABLE_NAME_LOGS */
 
-namespace KolosStudio\Helpers;
+namespace Kolos\Studio\Helpers;
+
+use Bitrix\Main\SystemException;
 
 class Logger
 {
@@ -17,6 +19,9 @@ class Logger
     {
         if (defined('HL_TABLE_NAME_LOGS')) {
             $this->loggerEntity = new HighloadBlock(HL_TABLE_NAME_LOGS);
+        } else {
+            throw new \ErrorException('Parameters HL_TABLE_NAME_LOGS not defined');
+            return false;
         }
         $this->clearOldLogs();
     }

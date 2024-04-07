@@ -1,6 +1,6 @@
 <?php
 
-namespace KolosStudio\Integration\Prices;
+namespace Kolos\Studio\Integration\Prices;
 
 use Bitrix\Catalog\GroupAccessTable;
 use Bitrix\Catalog\GroupTable;
