@@ -13,6 +13,8 @@ class Logger
     public string $method = '';
     public string $status = '';
     public string $comment = '';
+    private const clearTimeAdd = 604800;
+
     private HighloadBlock $loggerEntity;
 
     function __construct()
@@ -21,12 +23,12 @@ class Logger
             $this->loggerEntity = new HighloadBlock(HL_TABLE_NAME_LOGS);
         } else {
             throw new \ErrorException('Parameters HL_TABLE_NAME_LOGS not defined');
-            return false;
         }
+        
         $this->clearOldLogs();
     }
 
-    private function save(): void
+    public function save(): void
     {
         $fields = [
             'UF_METHOD' => $this->method,
@@ -45,7 +47,7 @@ class Logger
     {
         $oldList = $this->loggerEntity->find([
             'filter' => [
-                '<UF_DATE_ADD' => ConvertTimeStamp(false, "FULL"),
+                '<UF_DATE_ADD' => ConvertTimeStamp(time() - self::clearTimeAdd, "FULL"),
             ],
             'select' => [
                 'ID',

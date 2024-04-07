@@ -3,6 +3,7 @@
 namespace Kolos\Studio\Integration\Prices;
 
 use Bitrix\Catalog\GroupAccessTable;
+use Bitrix\Catalog\GroupLangTable;
 use Bitrix\Catalog\GroupTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
@@ -35,7 +36,7 @@ class TypePrices
 
         $entityId = $this->find();
 
-        if($entityId > 0){
+        if($entityId == 0){
             $result = GroupTable::add($fields);
 
             if (!$result->isSuccess()) {
@@ -44,6 +45,7 @@ class TypePrices
 
             $entityId = (int)$result->getId();
 
+            $this->storeLang($entityId);
             $this->storeGroup($entityId);
         }
         else{
@@ -74,15 +76,25 @@ class TypePrices
         
         return 0;
     }
-    
+
+    private function storeLang(int $entityId):void
+    {
+        $result = GroupLangTable::add([
+            "CATALOG_GROUP_ID" => $entityId,
+            "LANG" => 'ru',
+            "NAME" => $this->title,
+        ]);
+
+        if (!$result->isSuccess()) {
+            throw new SystemException(implode(', ', $result->getErrorMessages()));
+        }
+    }
+
     private function fill(): array
     {
         return [
             "NAME" => $this->name,
             "XML_ID" => $this->code,
-            "LANG" => [
-                "ru" => $this->title,
-            ],
         ];
     }
 
@@ -94,7 +106,17 @@ class TypePrices
         $result = GroupAccessTable::add([
             "CATALOG_GROUP_ID" => $id,
             "GROUP_ID" => $this->groupsShow,
-            "ACCESS" => $this->groupsBuy,
+            "ACCESS" => GroupAccessTable::ACCESS_VIEW,
+        ]);
+
+        if (!$result->isSuccess()) {
+            throw new SystemException(implode(', ', $result->getErrorMessages()));
+        }
+
+        $result = GroupAccessTable::add([
+            "CATALOG_GROUP_ID" => $id,
+            "GROUP_ID" => $this->groupsBuy,
+            "ACCESS" => GroupAccessTable::ACCESS_BUY,
         ]);
 
         if (!$result->isSuccess()) {

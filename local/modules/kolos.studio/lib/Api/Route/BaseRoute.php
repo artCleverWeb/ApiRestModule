@@ -7,26 +7,53 @@ abstract class BaseRoute
     protected \Kolos\Studio\Api\MainApi $parent;
     protected $logger = null;
     protected string $method = '';
-    protected $data = null;
+    protected $arRequest = [];
     protected $arResult = [];
+    protected $requestMethod = '';
 
-    abstract public function process();
-    abstract protected function  validate();
+    abstract protected function childProcess();
 
-    function __construct(\Kolos\Studio\Api\MainApi $class)
+    abstract protected function validate(): bool;
+
+    abstract protected function checkPermission(): bool;
+
+    function __construct(\Kolos\Studio\Api\MainApi $class, string $method)
     {
         $this->parent = $class;
+        $this->method = $method;
         $this->getLogger();
+        $this->setRequest();
+    }
+
+    public function process()
+    {
+        $this->startLogger();
+
+        if ($this->checkPermission() === true) {
+            if ($this->validate() === true) {
+                $this->childProcess();
+                $this->setResult();
+            }
+        }
+    }
+
+    protected function startLogger()
+    {
+        $this->logger->status = 'process';
+        $this->logger->save();
     }
 
     protected function setResult(): void
     {
-        $this->parent->setResult($this->data);
+        $this->parent->setResult($this->arResult);
     }
-    
+
     protected function setError(int $code, string $message): void
     {
         $this->parent->setError($code, $message);
+        $this->logger->status = 'fatalErrors';
+        $this->logger->comment = $message;
+        $this->logger->save();
     }
 
     protected function getLogger()
@@ -34,12 +61,16 @@ abstract class BaseRoute
         try {
             $this->logger = new \Kolos\Studio\Helpers\Logger;
             $this->logger->method = $this->method;
-        }
-        catch(Exception $e) {
+        } catch (Exception $e) {
             $this->setError(500, $e->getMessage());
         }
 
         return $this->logger;
     }
 
+    private function setRequest(): void
+    {
+        $this->arRequest = $this->parent->arRequest;
+        $this->requestMethod = $this->parent->methodRequest;
+    }
 }

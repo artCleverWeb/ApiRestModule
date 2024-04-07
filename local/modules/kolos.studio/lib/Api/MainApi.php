@@ -12,6 +12,8 @@ class MainApi
     protected $arErrors = [];
     protected $CodeStatus = 200;
     private $curDir = '/';
+    public $methodRequest = '';
+    public $arRequest = [];
 
     private $routeClass = null;
     private $methodClass = [
@@ -84,11 +86,22 @@ class MainApi
 
     public function route(string $method)
     {
+
+        $this->methodRequest = $_SERVER['REQUEST_METHOD'];
+        $this->setRequest();
+
         $isChecked = $this->checkMethod($method);
 
         if ($isChecked) {
-            $this->routeClass->process();
+            if(is_a($this->routeClass, '\Kolos\Studio\Api\Route\BaseRoute')) {
+                $this->routeClass->process();
+            }
+            else
+            {
+                $this->setError(500, 'No route class found to process the request');
+            }
         }
+
     }
 
     private function checkMethod(string $method): bool
@@ -121,8 +134,7 @@ class MainApi
             return false;
         }
 
-        $this->routeClass = new $this->methodClass[$this->versionCall][$this->methodCall]($this);
-        $this->routeClass->method = $this->methodCall;
+        $this->routeClass = new $this->methodClass[$this->versionCall][$this->methodCall]($this, $this->methodCall);
         return true;
     }
 
@@ -132,10 +144,9 @@ class MainApi
         $this->arErrors[] = [
             $message,
         ];
-
     }
 
-    protected function setResult(array $arData = []): bool
+    public function setResult(array $arData = []): bool
     {
         if (is_array($arData)) {
             $this->arResult = array_merge_recursive($this->arResult, $arData);
@@ -154,7 +165,12 @@ class MainApi
         if (empty($this->arErrors)) {
             echo json_encode(($this->isUTF() ? $this->getLowerKeys($this->arResult) : $APPLICATION->ConvertCharsetArray($this->getLowerKeys($this->arResult), 'WINDOWS-1251', 'UTF-8')));
         } else {
-            echo json_encode($this->isUTF() ? $this->getLowerKeys($this->arErrors[0]) : $APPLICATION->ConvertCharsetArray($this->getLowerKeys($this->arErrors[0]), 'WINDOWS-1251', 'UTF-8'));
+            echo json_encode(
+                [
+                'answer' => 'Error',
+                'message' => $this->isUTF() ? $this->getLowerKeys($this->arErrors[0]) : $APPLICATION->ConvertCharsetArray($this->getLowerKeys($this->arErrors[0]), 'WINDOWS-1251', 'UTF-8')
+                ]
+            );
         }
 
         return true;
@@ -168,5 +184,40 @@ class MainApi
     private function getLowerKeys($ar)
     {
         return $ar;
+    }
+
+    public function setRequest(): void
+    {
+        switch ($this->methodRequest) {
+            case 'GET':
+                $val = $_GET;
+                break;
+            case 'POST':
+                if (!count($_POST)) {
+                    if ($_SERVER["CONTENT_TYPE"] == 'application/json') {
+                        $POST = json_decode(file_get_contents('php://input'), true);
+                    } else {
+                        parse_str(file_get_contents('php://input'), $POST);
+                    }
+
+                    if (!$POST) {
+                        $POST = $_POST;
+                    }
+                }
+
+                $val = $POST;
+                break;
+            case 'PUT':
+
+                if ($_SERVER["CONTENT_TYPE"] == 'application/json') {
+                    $_PUT = json_decode(file_get_contents('php://input'), true);
+                } else {
+                    parse_str(file_get_contents('php://input'), $_PUT);
+                }
+                $val = $_PUT;
+                break;
+        }
+
+        $this->arRequest = $val;
     }
 }
