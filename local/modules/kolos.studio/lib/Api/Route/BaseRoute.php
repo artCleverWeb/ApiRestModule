@@ -10,6 +10,8 @@ abstract class BaseRoute
     protected $arRequest = [];
     protected $arResult = [];
     protected $requestMethod = '';
+    protected $isWarning = false;
+    protected $WarninText = '';
 
     abstract protected function childProcess();
 
@@ -72,5 +74,11 @@ abstract class BaseRoute
     {
         $this->arRequest = $this->parent->arRequest;
         $this->requestMethod = $this->parent->methodRequest;
+    }
+
+    private function validateCodeValue($value): bool
+    {
+        preg_match('/^([a-zA-Z0-9])+$/m', $value, $matches, PREG_SET_ORDER, 0)
+        return count($matches) > 0;
     }
 }

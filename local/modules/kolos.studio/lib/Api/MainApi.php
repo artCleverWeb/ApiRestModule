@@ -19,6 +19,7 @@ class MainApi
     private $methodClass = [
         'v1' => [
             'prices.types' => Route\TypePriceRoute::class,
+            'prices.stocks' => Route\StockGoodRoute::class,
         ],
     ];
 
