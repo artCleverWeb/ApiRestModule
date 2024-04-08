@@ -34,6 +34,15 @@ abstract class BaseRoute
         if ($this->checkPermission() === true) {
             if ($this->validate() === true) {
                 $this->childProcess();
+
+                if ($this->isWarning !== false) {
+                    $this->logger->status = 'warning';
+                    $this->logger->comment = $this->WarninText;
+                    $this->logger->save();
+                } else {
+                    $this->logger->status = 'success';
+                    $this->logger->save();
+                }
                 $this->setResult();
             }
         }
@@ -78,7 +87,7 @@ abstract class BaseRoute
 
     private function validateCodeValue($value): bool
     {
-        preg_match('/^([a-zA-Z0-9])+$/m', $value, $matches, PREG_SET_ORDER, 0)
+        preg_match('/^([a-zA-Z0-9])+$/m', $value, $matches, PREG_OFFSET_CAPTURE, 0);
         return count($matches) > 0;
     }
 }

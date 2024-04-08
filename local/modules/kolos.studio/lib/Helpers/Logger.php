@@ -51,7 +51,7 @@ class Logger
             ],
             'select' => [
                 'ID',
-            ]
+            ],
         ]);
 
         foreach ($oldList as $item) {

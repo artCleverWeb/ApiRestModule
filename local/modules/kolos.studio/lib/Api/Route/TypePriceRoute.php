@@ -19,9 +19,6 @@ class TypePriceRoute extends BaseRoute
         $this->arResult = [
             'status' => true,
         ];
-
-        $this->logger->status = 'success';
-        $this->logger->save();
     }
 
     protected function validate(): bool
