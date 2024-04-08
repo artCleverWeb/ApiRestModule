@@ -20,6 +20,7 @@ class MainApi
         'v1' => [
             'prices.types' => Route\TypePriceRoute::class,
             'prices.stocks' => Route\StockGoodRoute::class,
+            'catalog.colors' => Route\ColorDirectoryRoute::class,
         ],
     ];
 
