@@ -1,8 +1,10 @@
 <?php
 
-namespace Kolos\Studio\Api\Route;
+namespace Kolos\Studio\Api\Route\v1;
 
-abstract class BaseRoute
+use Kolos\Studio\Api\Route\IBaseRoute;
+
+abstract class BaseRoute implements IBaseRoute
 {
     protected \Kolos\Studio\Api\MainApi $parent;
     protected $logger = null;

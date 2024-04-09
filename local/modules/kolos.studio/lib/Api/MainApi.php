@@ -4,6 +4,8 @@ namespace Kolos\Studio\Api;
 
 use Bitrix\Main\Application;
 
+require_once "IBaseRoute.php";
+
 class MainApi
 {
     static private $instance = null;
@@ -16,14 +18,6 @@ class MainApi
     public $arRequest = [];
 
     private $routeClass = null;
-    private $methodClass = [
-        'v1' => [
-            'prices.types' => Route\TypePriceRoute::class,
-            'prices.stocks' => Route\StockGoodRoute::class,
-            'catalog.colors' => Route\ColorDirectoryRoute::class,
-        ],
-    ];
-
     private $methodCall = '';
     private $versionCall = '';
 
@@ -88,22 +82,14 @@ class MainApi
 
     public function route(string $method)
     {
-
         $this->methodRequest = $_SERVER['REQUEST_METHOD'];
         $this->setRequest();
 
         $isChecked = $this->checkMethod($method);
 
         if ($isChecked) {
-            if(is_a($this->routeClass, '\Kolos\Studio\Api\Route\BaseRoute')) {
-                $this->routeClass->process();
-            }
-            else
-            {
-                $this->setError(500, 'No route class found to process the request');
-            }
+            $this->routeClass->process();
         }
-
     }
 
     private function checkMethod(string $method): bool
@@ -121,22 +107,36 @@ class MainApi
         }
 
         $this->versionCall = $arrMethod[0];
+        unset($arrMethod[0]);
 
-        if (!isset($this->methodClass[$this->versionCall])) {
+        $methodClassName = '\\' . __NAMESPACE__ . '\\Route\\' . strtolower($this->versionCall);
+
+        $baseRouteClassName = $methodClassName . '\BaseRoute';
+
+        if (class_exists($baseRouteClassName) !== true) {
             $this->setError(403, 'Version not allowed');
             return false;
         }
 
-        unset($arrMethod[0]);
+        foreach ($arrMethod as $dir) {
+            $methodClassName .= '\\' . ucfirst(strtolower($dir));
+        }
+
         $this->methodCall = implode('.', $arrMethod);
 
 
-        if (!isset($this->methodClass[$this->versionCall][$this->methodCall])) {
+        if (class_exists($methodClassName) !== true) {
             $this->setError(403, 'Method not allowed');
             return false;
         }
 
-        $this->routeClass = new $this->methodClass[$this->versionCall][$this->methodCall]($this, $this->methodCall);
+        $this->routeClass = new $methodClassName($this, $this->methodCall);
+
+        if (!is_a($this->routeClass, $baseRouteClassName)) {
+            $this->setError(403, 'Method not allowed');
+            return false;
+        }
+
         return true;
     }
 
@@ -165,12 +165,24 @@ class MainApi
         Header("Content-Type: application/json; charset=utf-8", true);
 
         if (empty($this->arErrors)) {
-            echo json_encode(($this->isUTF() ? $this->getLowerKeys($this->arResult) : $APPLICATION->ConvertCharsetArray($this->getLowerKeys($this->arResult), 'WINDOWS-1251', 'UTF-8')));
+            echo json_encode(
+                ($this->isUTF() ? $this->getLowerKeys($this->arResult) : $APPLICATION->ConvertCharsetArray(
+                    $this->getLowerKeys($this->arResult),
+                    'WINDOWS-1251',
+                    'UTF-8'
+                ))
+            );
         } else {
             echo json_encode(
                 [
-                'answer' => 'Error',
-                'message' => $this->isUTF() ? $this->getLowerKeys($this->arErrors[0]) : $APPLICATION->ConvertCharsetArray($this->getLowerKeys($this->arErrors[0]), 'WINDOWS-1251', 'UTF-8')
+                    'answer' => 'Error',
+                    'message' => $this->isUTF() ? $this->getLowerKeys(
+                        $this->arErrors[0]
+                    ) : $APPLICATION->ConvertCharsetArray(
+                        $this->getLowerKeys($this->arErrors[0]),
+                        'WINDOWS-1251',
+                        'UTF-8'
+                    )
                 ]
             );
         }

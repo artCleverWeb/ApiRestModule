@@ -1,10 +1,11 @@
 <?php
 
-namespace Kolos\Studio\Api\Route;
+namespace Kolos\Studio\Api\Route\v1\Prices;
 
+use Kolos\Studio\Api\Route\v1\BaseRoute;
 use Bitrix\Main\SystemException;
 
-class StockGoodRoute extends BaseRoute
+class Stocks extends BaseRoute
 {
 
     public function childProcess()

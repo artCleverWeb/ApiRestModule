@@ -1,8 +1,10 @@
 <?php
 
-namespace Kolos\Studio\Api\Route;
+namespace Kolos\Studio\Api\Route\v1\Prices;
 
-class TypePriceRoute extends BaseRoute
+use Kolos\Studio\Api\Route\v1\BaseRoute;
+
+class Types extends BaseRoute
 {
     public function childProcess()
     {

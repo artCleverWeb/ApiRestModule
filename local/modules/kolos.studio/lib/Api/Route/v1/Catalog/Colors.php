@@ -1,11 +1,12 @@
 <?php
 
-namespace Kolos\Studio\Api\Route;
+namespace Kolos\Studio\Api\Route\v1\Catalog;
 
-require_once 'BaseDirectoryRoute.php';
+require_once __DIR__ . '/../BaseDirectoryRoute.php';
 
+use Kolos\Studio\Api\Route\v1\BaseRoute;
 
-class ColorDirectoryRoute extends BaseRoute
+class Colors extends BaseRoute
 {
     use \BaseDirectoryRoute;
 
