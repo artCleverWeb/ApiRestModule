@@ -81,15 +81,19 @@ abstract class BaseRoute implements IBaseRoute
         return $this->logger;
     }
 
+    protected function validateNameValue($value): bool
+    {
+        return preg_match('/^([а-яА-Яa-zA-Z0-9 &-]){2,25}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+    }
+
     private function setRequest(): void
     {
         $this->arRequest = $this->parent->arRequest;
         $this->requestMethod = $this->parent->methodRequest;
     }
 
-    private function validateCodeValue($value): bool
+    protected function validateCodeValue(string $value): bool
     {
-        preg_match('/^([a-zA-Z0-9])+$/m', $value, $matches, PREG_OFFSET_CAPTURE, 0);
-        return count($matches) > 0;
+        return preg_match('/^([a-zA-Z0-9])+$/m', $value, $matches, PREG_OFFSET_CAPTURE);
     }
 }

@@ -18,6 +18,10 @@ class ProductDirectory
     public function store(array $fields): int
     {
 
+        if(!isset($fields['UF_XML_ID'])){
+            $fields['UF_XML_ID'] = $fields['UF_CODE'];
+        }
+
         if ($this->validate($fields) === false) {
             return 0;
         }
@@ -56,7 +60,7 @@ class ProductDirectory
     private function validate(array $fields): bool
     {
         $keysRequest = array_keys($fields);
-        $keysNeed = ['UF_CODE', 'UF_NAME'];
+        $keysNeed = ['UF_CODE', 'UF_NAME', 'UF_NAME'];
 
         if (count(array_diff($keysNeed, $keysRequest)) > 0) {
             return false;
