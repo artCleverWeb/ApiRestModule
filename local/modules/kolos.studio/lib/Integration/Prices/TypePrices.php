@@ -59,7 +59,7 @@ class TypePrices
         return $entityId;
     }
 
-    private function find():int
+    public function find():int
     {
         $group = GroupTable::getList([
             'filter' => [

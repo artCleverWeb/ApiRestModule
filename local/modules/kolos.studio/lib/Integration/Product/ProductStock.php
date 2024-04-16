@@ -2,12 +2,10 @@
 
 namespace Kolos\Studio\Integration\Product;
 
-
-use Bitrix\Catalog\GroupTable;
+use \Kolos\Studio\Helpers\Elements;
 use Bitrix\Catalog\ProductTable;
 use Bitrix\Main\Loader;
 use Bitrix\Main\SystemException;
-use Kolos\Studio\Helpers\HighloadBlock;
 
 Loader::includeModule('catalog');
 
@@ -98,7 +96,7 @@ class ProductStock
 
     private function getProductId(): int
     {
-        $product = \Kolos\Studio\Helpers\Elements::getByXmlCode($this->productCode, $this->iblockId);
+        $product = Elements::getByXmlCode($this->productCode, $this->iblockId);
 
         if (isset($product['ID']) && $product['ID'] > 0) {
             $this->productId = $product['ID'];

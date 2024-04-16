@@ -26,6 +26,22 @@ class Good
         return $this->productClass;
     }
 
+    public function getByCode(string $code)
+    {
+        $product = $this->productClass::getList([
+            'filter' => ['XML_ID' => $code],
+            'cache' => [
+                'ttl' => 600
+            ],
+        ])->fetchObject();
+
+        if ($product) {
+            return $product['ID'];
+        }
+
+        return 0;
+    }
+
     public function findOrCreate(string $code)
     {
         $product = $this->productClass::getList([
