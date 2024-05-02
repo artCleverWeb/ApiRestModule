@@ -67,4 +67,23 @@ class Elements
 
         return $res->fetch();
     }
+
+    public static function getXmlCodeById(int $id, $iblockId = false): string
+    {
+        $filter = [
+            'ID' => $id,
+        ];
+
+        if ($iblockId) {
+            $filter['IBLOCK_ID'] = $iblockId;
+        }
+
+        $res = \CIBlockElement::GetList([], $filter, false, false, ['XML_ID']);
+
+        if ($item = $res->fetch()) {
+            return $item['XML_ID'];
+        }
+
+        return $id;
+    }
 }

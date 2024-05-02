@@ -38,17 +38,19 @@ class Goods extends BaseRoute
 
                     if (!empty($item['image'])) {
                         $arFile = \CFile::MakeFileArray($item['image']);
-                        if (strlen(\CFile::CheckImageFile($arFile)) < 1) {
-                            $this->isWarning = true;
-                            $this->WarninText .= "The $key element images path {$item['image']} not image" . PHP_EOL;
-
+                        if (is_null(\CFile::CheckImageFile($arFile))) {
                             $fileId = \CFile::SaveFile($arFile, "iblock");
                             if ($fileId > 0) {
                                 $productClass->setDetailPicture($fileId);
                                 $productClass->setPreviewPicture($fileId);
                             } else {
+                                $this->isWarning = true;
                                 $this->WarninText .= "The $key element images path {$item['image']} can't save" . PHP_EOL;
                             }
+                        }
+                        else{
+                            $this->isWarning = true;
+                            $this->WarninText .= "The $key element images path {$item['image']} not image" . PHP_EOL;
                         }
                     } else {
                         $productClass->setDetailPicture('');

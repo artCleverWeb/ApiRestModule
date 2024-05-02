@@ -82,6 +82,8 @@ class MainApi
 
     public function route(string $method)
     {
+        $method = substr($method, 0, strpos($method, '?'));
+
         $this->methodRequest = $_SERVER['REQUEST_METHOD'];
         $this->setRequest();
 
@@ -123,8 +125,7 @@ class MainApi
         }
 
         $this->methodCall = implode('.', $arrMethod);
-
-
+        
         if (class_exists($methodClassName) !== true) {
             $this->setError(403, 'Method not allowed');
             return false;

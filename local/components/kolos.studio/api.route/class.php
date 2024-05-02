@@ -1,7 +1,6 @@
 <?php if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
 use Bitrix\Main\Engine\Contract\Controllerable;
-use Ibrush\Main\Sale\ProductService;
 
 class ApiRoute extends \CBitrixComponent implements Controllerable
 {
