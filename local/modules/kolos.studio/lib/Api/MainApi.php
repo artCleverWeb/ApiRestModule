@@ -126,7 +126,7 @@ class MainApi
         }
 
         $this->methodCall = implode('.', $arrMethod);
-        
+
         if (class_exists($methodClassName) !== true) {
             $this->setError(403, 'Method not allowed');
             return false;
