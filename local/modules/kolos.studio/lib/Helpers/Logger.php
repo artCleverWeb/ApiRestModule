@@ -14,6 +14,7 @@ class Logger
     public string $status = '';
     public string $comment = '';
     private const clearTimeAdd = 604800;
+    public array $request = [];
 
     private HighloadBlock $loggerEntity;
 
@@ -34,6 +35,9 @@ class Logger
             'UF_METHOD' => $this->method,
             'UF_STATUS' => $this->status,
             'UF_COMMENT' => $this->comment,
+            'UF_IP' => Base::getIpAddress(),
+            'UF_REQUEST' => json_encode($this->request),
+
         ];
 
         if ($this->id == 0) {

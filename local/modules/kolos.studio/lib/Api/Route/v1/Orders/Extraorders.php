@@ -35,13 +35,11 @@ class Extraorders extends BaseRoute
         $result = [];
 
         foreach ($orders as $order) {
-           // $order = \Bitrix\Sale\Order::load(123);
-
             $basketInfo = [];
 
             $basket = $order->getBasket();
 
-            foreach ($basket->getBasketItems() as $basketItem){
+            foreach ($basket->getBasketItems() as $basketItem) {
                 $basketInfo[] = [
                     'goodCode' => \Kolos\Studio\Helpers\Elements::getXmlCodeById($basketItem->getProductId()),
                     'quantity' => $basketItem->getQuantity(),
@@ -77,11 +75,15 @@ class Extraorders extends BaseRoute
         $firstLine = $this->arRequest;
 
         $keysRequest = array_keys($firstLine);
-        $keysNeed = ['dateStart', 'dateEnd'];
+        $keysNeed = ['dateStart'];
 
         if (count(array_diff($keysNeed, $keysRequest)) > 0) {
             $this->setError(400, 'The request structure is not valid!');
             return false;
+        }
+
+        if (!isset($this->arRequest['dateEnd']) || empty($this->arRequest['dateEnd'])) {
+            $this->arRequest['dateEnd'] = date('d-m-Y');
         }
 
         if (preg_match(
@@ -104,6 +106,14 @@ class Extraorders extends BaseRoute
             return false;
         }
 
+        $date1 = \DateTime::createFromFormat('d-m-Y', $this->arRequest['dateStart']);
+        $date2 = \DateTime::createFromFormat('d-m-Y', $this->arRequest['dateEnd']);
+        $dayDiff = $date1->diff($date2)->format('%a');
+
+        if ($dayDiff > 30) {
+            $this->setError(400, 'Разница между датами превышает 30 дней');
+            return false;
+        }
         return true;
     }
 

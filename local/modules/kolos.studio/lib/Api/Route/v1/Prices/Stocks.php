@@ -63,6 +63,12 @@ class Stocks extends BaseRoute
             return false;
         }
 
+        if (filter_var($item['quantity'], FILTER_VALIDATE_INT) === false || (int)$item['quantity'] < 0) {
+            $this->isWarning = true;
+            $this->WarninText .= "In the $key element, the quantity value must be an integer" . PHP_EOL;
+            return false;
+        }
+
         return true;
     }
 

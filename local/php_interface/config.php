@@ -1,8 +1,9 @@
 <?php
 
-define('HL_TABLE_NAME_LOGS', 'integration_logs');
-define('HL_TABLE_DIRECTORY_COLOR', 'directory_color');
-define('HL_TABLE_DIRECTORY_VARIETIES', 'directory_varieties');
-define('HL_TABLE_DIRECTORY_PLANTATIONS', 'directory_plantations');
+define('HL_TABLE_NAME_LOGS', 'integration_logs'); // Название HL таблицы с логами интеграции
+define('HL_TABLE_DIRECTORY_COLOR', 'directory_color'); // Название HL таблицы со справочником цветов
+define('HL_TABLE_DIRECTORY_VARIETIES', 'directory_varieties'); // Название HL таблицы со справочником сортов
+define('HL_TABLE_DIRECTORY_PLANTATIONS', 'directory_plantations'); // Название HL таблицы со справочником плантаций
 
-define('IBLOCK_ID_CATALOG', 1);
+define('IBLOCK_ID_CATALOG', 1); // ID ИБ Каталога
+define('IBLOCK_ID_CATALOG_EMPTY', 2); //ID ИБ Каталога отсутствующих товаров

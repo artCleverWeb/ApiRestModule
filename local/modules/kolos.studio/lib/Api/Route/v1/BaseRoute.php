@@ -37,6 +37,8 @@ abstract class BaseRoute implements IBaseRoute
             if ($this->validate() === true) {
                 $this->childProcess();
 
+                $this->logger->request = $this->arRequest;
+
                 if ($this->isWarning !== false) {
                     $this->logger->status = 'warning';
                     $this->logger->comment = $this->WarninText;
@@ -53,6 +55,7 @@ abstract class BaseRoute implements IBaseRoute
     protected function startLogger()
     {
         $this->logger->status = 'process';
+        $this->logger->request = $this->arRequest;
         $this->logger->save();
     }
 

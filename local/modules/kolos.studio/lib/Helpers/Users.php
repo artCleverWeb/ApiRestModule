@@ -23,4 +23,22 @@ class Users
 
         return $id;
     }
+
+    public static function getIdByXmlCode(string $code): int
+    {
+        $userInfo = UserTable::getRow([
+            'filter' => [
+                'XML_ID' => $code,
+            ],
+            'select' => [
+                'ID',
+            ],
+        ]);
+
+        if ($userInfo) {
+            return $userInfo['ID'] ?? 0;
+        }
+
+        return 0;
+    }
 }

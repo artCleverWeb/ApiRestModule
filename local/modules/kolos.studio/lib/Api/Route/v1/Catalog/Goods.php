@@ -27,6 +27,8 @@ class Goods extends BaseRoute
 
                     $productClass->setName($item['name']);
                     $productClass->setXmlId($item['code']);
+                    $goodCode = $item['code'];
+
                     if (!$productClass->getCode()) {
                         $code = \Cutil::translit($item['name'], "ru", [
                             "replace_space" => "-",
@@ -45,12 +47,12 @@ class Goods extends BaseRoute
                                 $productClass->setPreviewPicture($fileId);
                             } else {
                                 $this->isWarning = true;
-                                $this->WarninText .= "The $key element images path {$item['image']} can't save" . PHP_EOL;
+                                $this->WarninText .= "У записи с ключем $key и кодом = $goodCode картинка {$item['image']} не может быть сохранена" . PHP_EOL;
                             }
                         }
                         else{
                             $this->isWarning = true;
-                            $this->WarninText .= "The $key element images path {$item['image']} not image" . PHP_EOL;
+                            $this->WarninText .= "У записи с ключем $key и кодом = $goodCode не является картинкой {$item['image']}" . PHP_EOL;
                         }
                     } else {
                         $productClass->setDetailPicture('');
@@ -83,7 +85,7 @@ class Goods extends BaseRoute
                     unset($productClass);
                 } catch (SystemException $e) {
                     $this->isWarning = true;
-                    $this->WarninText .= "Item $key: " . $e->getMessage();
+                    $this->WarninText .= "Элемент $key: " . $e->getMessage();
                 }
             }
         }

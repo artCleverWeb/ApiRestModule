@@ -26,3 +26,7 @@ awstats
 web.config
 storage.php
 .htaccess
+error.log
+error.log.*
+nxs.html
+nxs.php

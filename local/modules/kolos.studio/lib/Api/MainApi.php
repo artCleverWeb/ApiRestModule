@@ -82,7 +82,8 @@ class MainApi
 
     public function route(string $method)
     {
-        $method = substr($method, 0, strpos($method, '?'));
+
+        $method = strpos($method, '?') ? substr($method, 0, strpos($method, '?')) : $method;
 
         $this->methodRequest = $_SERVER['REQUEST_METHOD'];
         $this->setRequest();

@@ -93,7 +93,7 @@ class Colors extends BaseRoute
 
         if (!empty($item['color2']) && $this->validateColorValue($item['color2']) !== true) {
             $this->isWarning = true;
-            $this->WarninText .= "In the $key element, the color1 value does not satisfy the mask" . PHP_EOL;
+            $this->WarninText .= "In the $key element, the color2 value does not satisfy the mask" . PHP_EOL;
             return false;
         }
 
