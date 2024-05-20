@@ -52,6 +52,31 @@ class Elements
         return $resIds;
     }
 
+    public static function filterOnlyActive($iblockId = false, int $limit = 0)
+    {
+        $filter = [
+            'ACTIVE' => 'Y',
+            'ACTIVE_DATE' => 'Y',
+        ];
+
+        if ($iblockId) {
+            $filter['IBLOCK_ID'] = $iblockId;
+        }
+
+        $res = \CIBlockElement::GetList(["ACTIVE_FROM" => "ASC","SORT" => "DESC"], $filter, false, ($limit > 0 ?  ["nTopCount" => $limit] : false), ['ID', 'SORT', 'NAME']);
+
+        $resIds = [];
+
+        while ($el = $res->Fetch()) {
+            $resIds[] = [
+                'ID' => $el['ID'],
+                'NAME' => $el['NAME'],
+            ];
+        }
+
+        return $resIds;
+    }
+
     public static function getByXmlCode(string $xml_id, $iblockId = false): array
     {
         $filter = [
