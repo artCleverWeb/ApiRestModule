@@ -118,7 +118,7 @@ if (isset($arResult['ITEM'])) {
                      data-min="0"
                      data-max="<?= $item['PRODUCT']['QUANTITY'] ?>">
                     <button type="button" class="amount-mini__button amount-mini__button_decrement"></button>
-                    <input type="text" value="0" class="amount-mini__input"/>
+                    <input type="text" value="0" class="amount-mini__input" data-product-id="<?=$item['ID']?>"/>
                     <button type="button" class="amount-mini__button amount-mini__button_increment"></button>
                 </div>
             </div>

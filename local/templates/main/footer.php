@@ -2,6 +2,8 @@
 </div>
     <?php if(is_authorized() !== true):?>
         <?php include_file('/include/footer/user_auth_form.php', true); ?>
+    <?php else:?>
+        <?php include_file('/include/footer/user_auth.php', true); ?>
     <?php endif;?>
 <?php
 assets()->addJs(SITE_TEMPLATE_PATH . '/assets/js/vendors/jquery.min.js');

@@ -122,7 +122,7 @@ class Goods extends BaseRoute
 
     protected function validateNameValue($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9 &-])+$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-])+$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     protected function validateItem(array $item, $key): bool

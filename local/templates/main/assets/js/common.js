@@ -215,6 +215,10 @@ function amountInit($amount) {
         }
 
         amount.$input.val(amount.value);
+
+        if(appFlyBasket){
+            appFlyBasket.updateItem(amount.$input.get(0));
+        }
     });
 
     amount.$buttonIncrement.on('click', function() {
@@ -225,14 +229,18 @@ function amountInit($amount) {
         }
 
         amount.$input.val(amount.value);
+
+        if(appFlyBasket){
+            appFlyBasket.updateItem(amount.$input.get(0));
+        }
     });
 
-    amount.$input.on('input', function() {
+    amount.$input.on('input', function(dataTarget) {
         amount.value = Number(getClearValue(amount.$input.val()));
         amount.$input.val(amount.value);
     });
 
-    amount.$input.on('change', function() {
+    amount.$input.on('change', function(dataTarget) {
         amount.value = Number(getClearValue(amount.$input.val()));
 
         if (amount.value < amount.min) {
@@ -242,6 +250,7 @@ function amountInit($amount) {
         }
 
         amount.$input.val(amount.value);
+
     });
 
     function getClearValue(value) {

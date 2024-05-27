@@ -367,7 +367,7 @@ if (!function_exists('include_edit_file_php')) {
 if (!function_exists('price_format')) {
     function price_format($value, $decimals = 2)
     {
-        return number_format(round(floatval($value), 2), $decimals, ',', '');
+        return number_format(round(floatval($value), 2), $decimals, ',', '') . " ₽";
     }
 }
 
@@ -599,7 +599,7 @@ if(!function_exists('getUserPrice')) {
         $obCache = new CPHPCache;
 
         $identCache = $USER->IsAuthorized() ? $USER->GetID() : 'base';
-        if ($obCache->InitCache(360000, $identCache, "/" . SITE_ID . "/getUserPrice")) {
+        if ($obCache->InitCache(360000, $identCache , "/" . SITE_ID . "/getUserPrice")) {
             $price = $obCache->GetVars();
         } elseif ($obCache->StartDataCache()) {
             $price = [];
