@@ -69,104 +69,7 @@ $(document).ready(function(){
     $('.js-catalog').each(function() {
         var $catalog = $(this);
 
-        $('.catalog__bar', $catalog).each(function() {
-            var $select = $('select', this);
-
-            $select.selectCustom();
-        });
-
-        $('.catalog__menu_dates', $catalog).each(function() {
-            var carousel = {
-                $el: $('.owl-carousel', this),
-            };
-
-            carousel.options = {
-                nav: true,
-                dots: false,
-                navText: ['<svg class="icon-svg"><use xlink:href="#icon-arrow-1"></use></svg>', '<svg class="icon-svg"><use xlink:href="#icon-arrow-1"></use></svg>'],
-                margin: 0,
-                loop: false,
-                autoWidth: true,
-                items: 1,
-            };
-
-            carousel.$el.on('translated.owl.carousel', function(event) {
-                $('.owl-item.active', carousel.$el).first().addClass('active-first').siblings().removeClass('active-first');
-            });
-
-            carousel.$el.owlCarousel(carousel.options);
-        });
-
-        $('.catalog__menu_categories', $catalog).each(function() {
-            var $timers = $('.timer', this);
-
-            $timers.each(function() {
-                var $timer = $(this);
-
-                timerInit($timer);
-            });
-        });
-
-        $('.catalog__head-sub', $catalog).each(function() {
-            var $timer = $('.timer', this);
-
-            timerInit($timer);
-        });
-
-        $('.catalog__menu_categories', $catalog).each(function() {
-            var $timers = $('.timer', this);
-
-            $timers.each(function() {
-                var $timer = $(this);
-
-                timerInit($timer);
-            });
-        });
-
-        $('.catalog__filter', $catalog).each(function() {
-            var $filter = $(this),
-                $items = $('.filter__item', this);
-
-            $items.each(function() {
-                var item = {
-                    $el: $(this),
-                };
-
-                item.$slider = $('.filter__slider', item.$el);
-                item.$title = $('.filter__item-title', item.$el);
-
-                if (item.$slider.length) {
-                    sliderInit(item.$slider);
-                }
-
-                item.$title.on('click', function(event) {
-                    item.$el.toggleClass('expanded');
-                    event.preventDefault();
-                });
-            });
-
-            $('.filter__button-toggle', $filter).on('click', function(event) {
-                $filter.toggleClass('expanded');
-                event.preventDefault();
-            });
-        });
-
-        $('.catalog__products', $catalog).each(function() {
-            var $products = $('.catalog__products-item', this);
-
-            $products.each(function() {
-                var product = {
-                    $el: $(this),
-                };
-
-                product.$amount = $('.product-mini-a__amount', product.$el);
-
-                $('.button-tooltip', product.$el).tooltipCustom();
-
-                amountInit(product.$amount);
-            });
-        });
-
+        window.catalog.init($catalog);
     });
 
     /* Cart mini */
@@ -428,3 +331,111 @@ function sliderInit($slider) {
         slider.noUiSlider.set([slider.$inputs.eq(0).val(), slider.$inputs.eq(1).val()]);
     });
 }
+
+window.catalog = {
+    init: function($catalog) {
+        if ($catalog.hasClass('catalog_initialized')) {
+            return false;
+        }
+
+        $('.catalog__bar', $catalog).each(function() {
+            var $select = $('select', this);
+
+            $select.selectCustom();
+        });
+
+        $('.catalog__menu_dates', $catalog).each(function() {
+            var carousel = {
+                $el: $('.owl-carousel', this),
+            };
+
+            carousel.options = {
+                nav: true,
+                dots: false,
+                navText: ['<svg class="icon-svg"><use xlink:href="#icon-arrow-1"></use></svg>', '<svg class="icon-svg"><use xlink:href="#icon-arrow-1"></use></svg>'],
+                margin: 0,
+                loop: false,
+                autoWidth: true,
+                items: 1,
+            };
+
+            carousel.$el.on('translated.owl.carousel', function(event) {
+                $('.owl-item.active', carousel.$el).first().addClass('active-first').siblings().removeClass('active-first');
+            });
+
+            carousel.$el.owlCarousel(carousel.options);
+        });
+
+        $('.catalog__menu_categories', $catalog).each(function() {
+            var $timers = $('.timer', this);
+
+            $timers.each(function() {
+                var $timer = $(this);
+
+                timerInit($timer);
+            });
+        });
+
+        $('.catalog__head-sub', $catalog).each(function() {
+            var $timer = $('.timer', this);
+
+            timerInit($timer);
+        });
+
+        $('.catalog__menu_categories', $catalog).each(function() {
+            var $timers = $('.timer', this);
+
+            $timers.each(function() {
+                var $timer = $(this);
+
+                timerInit($timer);
+            });
+        });
+
+        $('.catalog__filter', $catalog).each(function() {
+            var $filter = $(this),
+                $items = $('.filter__item', this);
+
+            $items.each(function() {
+                var item = {
+                    $el: $(this),
+                };
+
+                item.$slider = $('.filter__slider', item.$el);
+                item.$title = $('.filter__item-title', item.$el);
+
+                if (item.$slider.length) {
+                    sliderInit(item.$slider);
+                }
+
+                item.$title.on('click', function(event) {
+                    item.$el.toggleClass('expanded');
+                    event.preventDefault();
+                });
+            });
+
+            $('.filter__button-toggle', $filter).on('click', function(event) {
+                $filter.toggleClass('expanded');
+                event.preventDefault();
+            });
+        });
+
+        $('.catalog__products', $catalog).each(function() {
+            var $products = $('.catalog__products-item', this);
+
+            $products.each(function() {
+                var product = {
+                    $el: $(this),
+                };
+
+                product.$amount = $('.product-mini-a__amount', product.$el);
+
+                $('.button-tooltip', product.$el).tooltipCustom();
+
+                amountInit(product.$amount);
+            });
+        });
+
+        $catalog.addClass('catalog_initialized');
+    },
+};

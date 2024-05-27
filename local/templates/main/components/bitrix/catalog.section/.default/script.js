@@ -56,6 +56,12 @@
 		{
 			BX.bind(window, 'scroll', BX.proxy(this.loadOnScroll, this));
 		}
+
+		$('.js-catalog').each(function() {
+			var $catalog = $(this);
+
+			window.catalog.init($catalog); // common.js
+		});
 	};
 
 	window.JCCatalogSectionComponent.prototype =
