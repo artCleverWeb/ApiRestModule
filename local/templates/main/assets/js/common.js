@@ -310,6 +310,10 @@ function sliderInit($slider) {
         slider.$inputs.eq(1).val(Math.round(values[1]));
     });
 
+    slider.noUiSlider.on('change', function(values) {
+        slider.$inputs.eq(0).trigger('keyup');
+    });
+
     slider.$inputs.on('input', function() {
         var value = this.value.replace(/[^0-9]/g, '') * 1;
         var index = $(this).index();
