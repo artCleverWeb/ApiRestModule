@@ -40,8 +40,6 @@ class CCatalogProductProviderCustom extends CCatalogProductProvider
                     $_SESSION['CATALOG_USER_COUPONS']
                 );
 
-                print_r($arPrice);
-
                 if ($arPrice) {
                     $arResult['PRICE_TYPE_ID'] = $arPrice['RESULT_PRICE']['PRICE_TYPE_ID'];
                     $arResult['BASE_PRICE'] = $arPrice['RESULT_PRICE']['BASE_PRICE'];

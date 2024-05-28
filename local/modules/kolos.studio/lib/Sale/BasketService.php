@@ -16,7 +16,7 @@ class BasketService
     protected static ?BasketService $instance = null;
     private ?\Bitrix\Sale\BasketBase $basket = null;
 
-    private function __construct()
+    public function __construct()
     {
         \Bitrix\Main\Loader::includeModule('sale');
         \Bitrix\Main\Loader::includeModule('catalog');
@@ -49,16 +49,36 @@ class BasketService
 
         $basket = $this->actualBasket();
         $basketItems = $basket->getBasketItems();
+        $productIds = [];
 
         foreach ($basketItems as $item) {
-            $productIds[] = $item->getProductId();
-            $result['basket'][] = [
-                'ID' => $item->getId(),
-                'PRODUCT_ID' => $item->getProductId(),
-                'NAME' => $item->getField('NAME'),
-                'QUANTITY' => $item->getQuantity(),
-                'PRICE' => price_format($item->getPrice()),
-            ];
+            if (!in_array($item->getProductId(), $productIds)) {
+                $productIds[] = $item->getProductId();
+                $result['basket'][] = [
+                    'ID' => $item->getId(),
+                    'PRODUCT_ID' => $item->getProductId(),
+                    'NAME' => $item->getField('NAME'),
+                    'QUANTITY' => $item->getQuantity(),
+                    'PRICE' => price_format($item->getPrice()),
+                ];
+            }
+        }
+
+        $productInfo = ProductService::getAvail([
+            'ID' => $productIds,
+            'IBLOCK_ID' => IBLOCK_ID_CATALOG,
+        ]);
+
+        foreach ($result['basket'] as &$product) {
+            $productId = $product['PRODUCT_ID'];
+
+            if (isset($productInfo[$productId])) {
+                $product['STEP'] = $productInfo[$productId]['PROPERTY_AMOUNT_IN_PACK_VALUE']
+                    ? $productInfo[$productId]['PROPERTY_AMOUNT_IN_PACK_VALUE'] : 1;
+
+                $product['MAX'] = $productInfo[$productId]['QUANTITY']
+                    ? $productInfo[$productId]['QUANTITY'] : 0;
+            }
         }
 
         $result['totalPrice'] = $this->getBasketPrice();
@@ -170,7 +190,7 @@ class BasketService
 
     public function updateBasket($id, $quantity)
     {
-        if($quantity <= 0){
+        if ($quantity <= 0) {
             return $this->deleteItem($id, $quantity);
         }
 
@@ -183,11 +203,9 @@ class BasketService
             return $res->isSuccess()
                 ? ['success' => true, 'error' => '']
                 : ['success' => false, 'error' => $res->getErrorMessages()];
-        }
-        else{
+        } else {
             return $this->addToBasket($id, $quantity);
         }
-
     }
 
     public function deleteItem($id, $quantity)

@@ -49,8 +49,7 @@ class Goods extends BaseRoute
                                 $this->isWarning = true;
                                 $this->WarninText .= "У записи с ключем $key и кодом = $goodCode картинка {$item['image']} не может быть сохранена" . PHP_EOL;
                             }
-                        }
-                        else{
+                        } else {
                             $this->isWarning = true;
                             $this->WarninText .= "У записи с ключем $key и кодом = $goodCode не является картинкой {$item['image']}" . PHP_EOL;
                         }
@@ -76,10 +75,20 @@ class Goods extends BaseRoute
                         }
                     }
 
+                    $isNew = $productClass->getId() > 0;
                     $result = $productClass->save();
 
                     if (!$result->isSuccess()) {
                         throw new SystemException(implode(', ', $result->getErrorMessages()));
+                    }
+
+                    if ($isNew) {
+                        \Bitrix\Catalog\ProductTable::add([
+                            "ID" => $result->getId(),
+                            "VAT_ID" => 1,
+                            "VAT_INCLUDED" => "Y",
+                            "TYPE " => \Bitrix\Catalog\ProductTable::TYPE_PRODUCT,
+                        ]);
                     }
 
                     unset($productClass);

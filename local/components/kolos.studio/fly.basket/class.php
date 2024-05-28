@@ -14,6 +14,7 @@ use Bitrix\Main\Result;
 use Bitrix\Main\Engine\ActionFilter;
 use Bitrix\Main\Engine\UrlManager;
 use Kolos\Studio\Sale\BasketService;
+use Kolos\Studio\Sale\OrderService;
 
 class FlyBasket extends \CBitrixComponent implements Controllerable
 {
@@ -21,6 +22,14 @@ class FlyBasket extends \CBitrixComponent implements Controllerable
     public function configureActions()
     {
         return [
+            'createOrder' => [
+                'prefilters' => [
+                    new ActionFilter\HttpMethod(
+                        [ActionFilter\HttpMethod::METHOD_POST]
+                    ),
+                    new ActionFilter\Csrf(),
+                ],
+            ],
             'getBasket' => [
                 'prefilters' => [
                     new ActionFilter\HttpMethod(
@@ -45,6 +54,16 @@ class FlyBasket extends \CBitrixComponent implements Controllerable
         return [];
     }
 
+    public function createOrderAction()
+    {
+        $orderService = new OrderService();
+
+        return AjaxJson::createSuccess(
+            $orderService->createOrder()
+        );
+        
+    }
+    
     public function getBasketAction()
     {
         return AjaxJson::createSuccess(

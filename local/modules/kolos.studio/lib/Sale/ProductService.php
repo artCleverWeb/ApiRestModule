@@ -23,6 +23,7 @@ class ProductService
                 'AVAILABLE',
                 'QUANTITY',
                 'QUANTITY_TRACE',
+                'PROPERTY_AMOUNT_IN_PACK'
             ]
         );
 

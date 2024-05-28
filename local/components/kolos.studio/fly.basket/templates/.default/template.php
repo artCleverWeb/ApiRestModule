@@ -24,7 +24,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             </div>
                         </div>
                         <div class="product-mini-b__cell product-mini-b__cell_1-2">
-                            <div class="amount-mini product-mini-b__amount" data-step="1" data-min="0" data-max="1000">
+                            <div class="amount-mini product-mini-b__amount" data-step="{{ basketItem.STEP }}" data-min="0" data-max="{{ basketItem.MAX }}">
                                 <button type="button"
                                         class="amount-mini__button amount-mini__button_decrement"
                                         @click="decrement"></button>
@@ -66,12 +66,76 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </a>
                 </div>
                 <div class="cart-mini__buttons-item cart-mini__buttons-item_order">
-                    <a href="javascript:void(0)" class="button-a button-a_bg-2 cart-mini__button">
+                    <a href="javascript:void(0)" class="button-a button-a_bg-2 cart-mini__button" @click="createOrder">
                         <div class="button-a__inner">
                             Оформить заказ
                             <div class="cart-mini__button-price" v-html="basketTotalPrice">
 
                             </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template v-if="orderId > 0 && isBasketEmpty">
+        <div class="cart-mini__data">
+            <div class="cart-mini__data-inner">
+                <div class="cart-mini__head">
+                    <div class="title cart-mini__title">
+                        Заказ оформлен!
+                    </div>
+                </div>
+                <div class="cart-mini__text">
+                    <p>
+                        Заказ №{{ orderId }} на сумму {{ orderPrice }} успешно создан. Менеджер Гринвилль свяжется с
+                        вами в рабочем порядке для дальнейшей обработки заказа.
+                    </p>
+                </div>
+
+                <div class="cart-mini__message cart-mini__message_products-unavailability" v-if="clearItems.length > 0">
+                    <div class="cart-mini__message-head">
+                        <div class="title cart-mini__message-title color-red">
+                            Отсутствующие товары
+                        </div>
+                    </div>
+
+                    <p>
+                        Часть товаров из вашей корзины на сумму <b>{{ clearPrice }}</b> была выкуплена другими пользователями и
+                        не попала в ваш заказ. Эти товары:
+                    </p>
+                    <div class="cart-mini__message-products" v-for="basketItem in clearItems">
+                        <div class="cart-mini__message-product">
+                            “{{ basketItem.NAME }}” × {{ basketItem.QUANTITY }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="cart-mini__button-close" @click="toggle">
+                <svg class="icon-svg cart-mini__button-close-icon">
+                    <use xlink:href="#icon-close"></use>
+                </svg>
+            </button>
+        </div>
+        <div class="cart-mini__bar">
+            <div class="cart-mini__buttons">
+                <div class="cart-mini__buttons-item cart-mini__buttons-item_toggle">
+                    <a href="javascript:void(0)" class="button-a button-a_bg-3 cart-mini__button" @click="toggle">
+                        <div class="button-a__inner">
+									<span class="button-a__text-item">
+										Показать
+									</span>
+                            <span class="button-a__text-item">
+										Закрыть
+									</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="cart-mini__buttons-item cart-mini__buttons-item_orders">
+                    <a href="#" class="button-a button-a_bg-2 cart-mini__button">
+                        <div class="button-a__inner">
+                            К заказам
                         </div>
                     </a>
                 </div>
@@ -88,6 +152,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 basket: {},
                 loading: true,
                 blockAjax: false,
+                orderId: 0,
+                clearItems: {},
+                orderPrice: 0,
             }
         },
         computed: {
@@ -113,6 +180,30 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             this.getBasket();
         },
         methods: {
+            createOrder() {
+                const _this = this
+
+                this.send('createOrder', {})
+                    .then(function (response) {
+                        if (response.status === 'success' && response.data.orderId) {
+                            _this.orderId = response.data.orderId || 0
+                            _this.orderPrice = response.data.orderPrice || 0
+                            _this.clearItems = response.data.clearList || {}
+                            _this.clearPrice = response.data.clearPrice || 0
+                            _this.basket = {}
+                            document.getElementById('js-cart-mini').classList.toggle('expanded')
+
+                            document.querySelectorAll('.amount-mini__input').forEach(product => {
+                                product.value = 0;
+                            })
+                        } else if (response.data.reload) {
+                            location.reload()
+                        }
+                        _this.blockAjax = false
+                    }, function (error) {
+                        console.log(error)
+                    })
+            },
             toggle() {
                 document.getElementById('js-cart-mini').classList.toggle('expanded')
             },
@@ -156,7 +247,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                 _this.updateItem(product);
             },
-            updateItem(product){
+            updateItem(product) {
                 const _this = this;
 
                 const dataSend = {
@@ -242,13 +333,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             },
             updateItems() {
                 const _this = this
-                _this.basketItems.forEach(item => {
-                    const products = document.querySelectorAll('[data-product-id="' + item.PRODUCT_ID + '"]')
+                if(_this.basketItems) {
+                    _this.basketItems.forEach(item => {
+                        const products = document.querySelectorAll('[data-product-id="' + item.PRODUCT_ID + '"]')
 
-                    products.forEach(product => {
-                        product.value = item.QUANTITY;
+                        products.forEach(product => {
+                            product.value = item.QUANTITY;
+                        })
                     })
-                })
+                }
             },
             getBasket() {
                 const _this = this
