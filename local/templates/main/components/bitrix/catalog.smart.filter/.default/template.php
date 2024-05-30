@@ -19,6 +19,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
 use Bitrix\Iblock\SectionPropertyTable;
 
 $this->setFrameMode(true);
+$isCheked = false;
 ?>
 <div class="filter catalog__filter">
     <button type="button" class="filter__button-toggle">
@@ -77,7 +78,7 @@ $this->setFrameMode(true);
                         $prices[$step_num] = number_format($arItem["VALUES"]["MAX"]["VALUE"], $precision, ".", "");
                     }
                     ?>
-                    <div class="bx-filter-parameters-box bx-active filter__item <?php
+                    <div class="bx-filter-parameters-box filter__item <?php
                     if (isset($arItem["DISPLAY_EXPANDED"]) && $arItem["DISPLAY_EXPANDED"] == "Y"): ?>expanded<?php
                     endif ?>">
                         <span class="bx-filter-container-modef"></span>
@@ -88,8 +89,8 @@ $this->setFrameMode(true);
                             </svg>
                         </div>
                         <div class="filter__item-data" data-role="bx_filter_block">
-                            <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
-                                 data-max="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>"
+                            <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["VALUE"] ?>"
+                                 data-max="<?= $arItem["VALUES"]["MAX"]["VALUE"] ?>"
                                  data-start-from="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
                                  data-start-to="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>">
                                 <div class="filter__slider-inputs">
@@ -156,8 +157,8 @@ $this->setFrameMode(true);
                         switch ($arItem["DISPLAY_TYPE"]) {
                             case SectionPropertyTable::NUMBERS_WITH_SLIDER:
                                 ?>
-                                <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
-                                     data-max="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>"
+                                <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["VALUE"] ?>"
+                                     data-max="<?= $arItem["VALUES"]["MAX"]["VALUE"] ?>"
                                      data-start-from="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
                                      data-start-to="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>">
                                     <div class="filter__slider-inputs">
@@ -258,6 +259,7 @@ $this->setFrameMode(true);
                             type="submit"
                             id="set_filter"
                             name="set_filter"
+                            style="display:none;"
                             value="<?= GetMessage("CT_BCSF_SET_FILTER") ?>"
                     />
                 </div>
@@ -291,6 +293,7 @@ $this->setFrameMode(true);
     </form>
 </div>
 </div>
+
 <script type="text/javascript">
     var smartFilter = new JCSmartFilter('<?php echo CUtil::JSEscape($arResult["FORM_ACTION"])?>', '<?=CUtil::JSEscape(
         $arParams["FILTER_VIEW_MODE"]

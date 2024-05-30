@@ -433,7 +433,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     }).mount('#js-cart-mini');
 
     BX.addCustomEvent('onAjaxSuccess', function ($param1, $param2) {
-        if ($param2.url.indexOf('kolos.studio%3Afly.basket') < 1) {
+        if ($param2 == null || $param2.url.indexOf('kolos.studio%3Afly.basket') < 1) {
             appFlyBasket.listener();
             appFlyBasket.getBasket();
         }
