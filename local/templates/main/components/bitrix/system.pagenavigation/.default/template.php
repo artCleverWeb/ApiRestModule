@@ -29,7 +29,6 @@ $strNavQueryStringFull = ($arResult["NavQueryString"] != "" ? "?" . $arResult["N
     <?php
     endif; ?>
     <input type="number" class="pages-nav-a__input" value="<?= $arResult["NavPageNomer"]?>"
-           data-url="<?= $arResult["sUrlPath"] ?>?<?= $strNavQueryString ?>"
            max="<?= $arResult["NavPageCount"] ?>" min="1">
     <div class="pages-nav-a__amount">
         из

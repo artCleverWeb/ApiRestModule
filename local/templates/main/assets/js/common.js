@@ -6,6 +6,21 @@ $(document).ready(function(){
     /* Form Elements */
     /* $('.js-select').selectCustom(); */
 
+    $(document).on('change', '.pages-nav-a__input', function(){
+        const catalogBlock = $(this).parents('.js-catalog').parent();
+        const containerId = catalogBlock.attr('id');
+        const bxAjaxId = containerId.replace('comp_', '');
+        const pageNum = 'PAGEN_' + $(this).parents('[data-pagination-num]').data('paginationNum');
+
+        const url = new URL(window.location.href)
+        url.searchParams.delete(pageNum);
+        url.searchParams.set(pageNum, $(this).val());
+        url.searchParams.set('bxajaxid', bxAjaxId);
+
+        let urlAjax = url.pathname.toString() + '?' + url.searchParams.toLocaleString();
+        BX.ajax.insertToNode(urlAjax, containerId);
+    })
+
     /* Popup */
     $('.js-popup').each(function () {
         var $popup = $(this),
