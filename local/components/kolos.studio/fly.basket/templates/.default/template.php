@@ -24,7 +24,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             </div>
                         </div>
                         <div class="product-mini-b__cell product-mini-b__cell_1-2">
-                            <div class="amount-mini product-mini-b__amount" data-step="{{ basketItem.STEP }}" data-min="0" data-max="{{ basketItem.MAX }}">
+                            <div class="amount-mini product-mini-b__amount" data-step="{{ basketItem.STEP }}"
+                                 data-min="0" data-max="{{ basketItem.MAX }}">
                                 <button type="button"
                                         class="amount-mini__button amount-mini__button_decrement"
                                         @click="decrement"></button>
@@ -102,7 +103,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </div>
 
                     <p>
-                        Часть товаров из вашей корзины на сумму <b>{{ clearPrice }}</b> была выкуплена другими пользователями и
+                        Часть товаров из вашей корзины на сумму <b>{{ clearPrice }}</b> была выкуплена другими
+                        пользователями и
                         не попала в ваш заказ. Эти товары:
                     </p>
                     <div class="cart-mini__message-products" v-for="basketItem in clearItems">
@@ -247,7 +249,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                 _this.updateItem(product);
             },
-            updateItem(product) {
+            updateItem(product, updateItems = true) {
                 const _this = this;
 
                 const dataSend = {
@@ -258,7 +260,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 _this.send('updateItem', dataSend).then(function (response) {
                     if (response.status === 'success' && response.data.basket) {
                         _this.basket = response.data.basket || {}
-                        _this.updateItems();
+                        if(updateItems) {
+                            _this.updateItems();
+                        }
                         _this.blockAjax = false
                     }
                 }, function (error) {
@@ -333,7 +337,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             },
             updateItems() {
                 const _this = this
-                if(_this.basketItems) {
+                if (_this.basketItems) {
                     _this.basketItems.forEach(item => {
                         const products = document.querySelectorAll('[data-product-id="' + item.PRODUCT_ID + '"]')
 
@@ -428,9 +432,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
     }).mount('#js-cart-mini');
 
-    BX.addCustomEvent('onAjaxSuccess', function () {
-        console.log(appFlyBasket.blockAjax);
-        if (appFlyBasket.blockAjax != true) {
+    BX.addCustomEvent('onAjaxSuccess', function ($param1, $param2) {
+        if ($param2.url.indexOf('kolos.studio%3Afly.basket') < 1) {
             appFlyBasket.listener();
             appFlyBasket.getBasket();
         }

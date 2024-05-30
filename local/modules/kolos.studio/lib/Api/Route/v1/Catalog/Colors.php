@@ -102,7 +102,7 @@ class Colors extends BaseRoute
 
     private function validateColorValue($value): bool
     {
-        preg_match('/^^#([a-zA-Z0-9]){2,15}$/m', $value, $matches, PREG_OFFSET_CAPTURE, 0);
+        preg_match('/^#([a-zA-Z0-9]){2,15}$/m', $value, $matches, PREG_OFFSET_CAPTURE, 0);
         return count($matches) > 0 && strlen($value) <= 25;
     }
 

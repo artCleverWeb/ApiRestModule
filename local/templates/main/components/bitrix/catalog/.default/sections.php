@@ -222,35 +222,35 @@ if ($isFilter) {
                                     <option value="20" <?php
                                     if ($count == 20): ?>selected<?php
                                     endif ?>
-                                            data-url="<?= $APPLICATION->GetCurPageParam("count=20", ['count', 'PAGE_1']
+                                            data-url="<?= $APPLICATION->GetCurPageParam("count=20", ['count',  'PAGEN_1', 'bxajaxid']
                                             ) ?>">
                                         По 20
                                     </option>
                                     <option value="40" <?php
                                     if ($count == 40): ?>selected<?php
                                     endif ?>
-                                            data-url="<?= $APPLICATION->GetCurPageParam("count=40", ['count', 'PAGE_1']
+                                            data-url="<?= $APPLICATION->GetCurPageParam("count=40", ['count', 'PAGEN_1', 'bxajaxid']
                                             ) ?>">
                                         По 40
                                     </option>
                                     <option value="60" <?php
                                     if ($count == 60): ?>selected<?php
                                     endif ?>
-                                            data-url="<?= $APPLICATION->GetCurPageParam("count=60", ['count', 'PAGE_1']
+                                            data-url="<?= $APPLICATION->GetCurPageParam("count=60", ['count',  'PAGEN_1', 'bxajaxid']
                                             ) ?>">
                                         По 60
                                     </option>
                                     <option value="80" <?php
                                     if ($count == 80): ?>selected<?php
                                     endif ?>
-                                            data-url="<?= $APPLICATION->GetCurPageParam("count=80", ['count', 'PAGE_1']
+                                            data-url="<?= $APPLICATION->GetCurPageParam("count=80", ['count', 'PAGEN_1', 'bxajaxid']
                                             ) ?>">
                                         По 80
                                     </option>
                                     <option value="100" <?php
                                     if ($count == 100): ?>selected<?php
                                     endif ?>
-                                            data-url="<?= $APPLICATION->GetCurPageParam("count=100", ['count', 'PAGE_1']
+                                            data-url="<?= $APPLICATION->GetCurPageParam("count=100", ['count',  'PAGEN_1', 'bxajaxid']
                                             ) ?>">
                                         По 100
                                     </option>
