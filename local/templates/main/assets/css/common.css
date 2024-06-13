@@ -600,8 +600,8 @@ a.breadcrumbs__item:hover {color: #DB4F4F; text-decoration: underline;}
 .catalog__products-head-cell {display: table-cell; font-size: 14px; font-weight: 600; text-transform: uppercase; color: #8A8B8C; text-align: center; padding: 20px 5px 20px 5px; border-bottom: 1px solid #D9D9D9; vertical-align: middle;}
 .catalog__products-head-cell_1-1 {width: 24%; text-align: left; padding-left: 0; }
 .catalog__products-head-cell_1-2 {}
-.catalog__products-head-cell_1-3 {}
-.catalog__products-head-cell_1-4 {}
+.catalog__products-head-cell_1-3 {width: 10%;}
+.catalog__products-head-cell_1-4 {width: 14%;}
 .catalog__products-head-cell_1-5 {}
 .catalog__products-head-cell_1-6 {}
 .catalog__products-head-cell_1-7 {}
