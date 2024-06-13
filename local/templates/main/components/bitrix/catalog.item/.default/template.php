@@ -71,6 +71,16 @@ if (isset($arResult['ITEM'])) {
                 </div>
             </div>
         </div>
+        <div class="product-mini-a__cell product-mini-a__cell_1-9">
+            <div class="product-mini-a__cell-inner">
+                <div class="product-mini-a__caption">
+                    Длина
+                </div>
+                <div class="product-mini-a__detail">
+                    <?= $item['DISPLAY_PROPERTIES']['LENGTH']['DISPLAY_VALUE'] ?>
+                </div>
+            </div>
+        </div>
         <div class="product-mini-a__cell product-mini-a__cell_1-5">
             <div class="product-mini-a__cell-inner">
                 <div class="product-mini-a__caption">
