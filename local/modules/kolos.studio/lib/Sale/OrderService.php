@@ -150,7 +150,7 @@ class OrderService
                 $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get($item['COUNT_ITEMS_FULL']);
 
                 $item['COUNT_ITEMS'] = count($item['basket']) - 1;
-                $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get($item['COUNT_ITEMS']);
+                $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS'] . $productsDeclension->get($item['COUNT_ITEMS']);
 
                 $item['PRODUCT_TITLE'] = current($item['basket'])['name'];
 
