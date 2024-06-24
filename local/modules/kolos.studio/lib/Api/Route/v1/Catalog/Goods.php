@@ -131,11 +131,17 @@ class Goods extends BaseRoute
 
     protected function validateNameValue($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.\/(),+]){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     protected function validateItem(array $item, $key): bool
     {
+        if(isset($item['length']) && intval($item['length']) < 0){
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value length" . PHP_EOL;
+            return false;
+        }
+
         if (!isset($item['code']) || empty($item['code'])) {
             $this->isWarning = true;
             $this->WarninText .= "The $key element contains an empty value code" . PHP_EOL;

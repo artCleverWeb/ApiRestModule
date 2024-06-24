@@ -95,7 +95,7 @@ class Pricetypes extends BaseRoute
 
     protected function validateCodeValue($value): bool
     {
-        return preg_match('/^([a-zA-Z0-9-]){2,37}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([a-fA-F0-9-]){35,37}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     protected function validate(): bool

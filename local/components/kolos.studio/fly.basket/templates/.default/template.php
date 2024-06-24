@@ -222,8 +222,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 })
                     .then(function (response) {
                         if (response.status === 'success' && response.data.basket) {
-                            _this.basket = response.data.basket || {}
-                            _this.updateItems();
+                            _this.getBasket();
                         }
                         _this.blockAjax = false
                     }, function (error) {
@@ -259,11 +258,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                 _this.send('updateItem', dataSend).then(function (response) {
                     if (response.status === 'success' && response.data.basket) {
-                        _this.basket = response.data.basket || {}
-                        if(updateItems) {
-                            _this.updateItems();
-                        }
-                        _this.blockAjax = false
+                        _this.getBasket();
                     }
                 }, function (error) {
                     console.log(error)
@@ -327,9 +322,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 _this.send('clearBasket')
                     .then(function (response) {
                         if (response.status === 'success' && response.data.result) {
-                            _this.basket = response.data.basket || {}
-                            _this.updateItems();
-                            _this.blockAjax = false
+                            _this.getBasket();
                         }
                     }, function (error) {
                         console.log(error)

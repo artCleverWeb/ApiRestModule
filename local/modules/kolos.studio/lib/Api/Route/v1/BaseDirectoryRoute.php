@@ -96,12 +96,12 @@ trait BaseDirectoryRoute
 
     private function validateCodeValueTrait($value): bool
     {
-        return preg_match('/^([a-zA-Z0-9-]){2,37}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([a-fA-F0-9-]){35,37}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     private function validateNameValueTrait($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.\/(),+]){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     protected function fill(array $data): array
