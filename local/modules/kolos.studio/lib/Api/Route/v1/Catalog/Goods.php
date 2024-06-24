@@ -58,12 +58,12 @@ class Goods extends BaseRoute
                         $productClass->setPreviewPicture();
                     }
 
-                    foreach ($item as $key => $value) {
-                        if (isset($this->fields[$key]) && !empty($this->fields[$key])) {
+                    foreach ($item as $keyProp => $value) {
+                        if (isset($this->fields[$keyProp]) && !empty($this->fields[$keyProp])) {
                             if (!isset($value) || empty($value) || $value == 'null') {
                                 $value = '';
                             }
-                            $fieldName = $this->fields[$key];
+                            $fieldName = $this->fields[$keyProp];
                             $methodGet = 'get' . $fieldName;
                             $methodSet = 'set' . $fieldName;
 
@@ -75,7 +75,7 @@ class Goods extends BaseRoute
                         }
                     }
 
-                    $isNew = $productClass->getId() > 0;
+                    $isNew = $productClass->getId() == 0;
                     $result = $productClass->save();
 
                     if (!$result->isSuccess()) {

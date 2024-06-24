@@ -266,7 +266,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         },
         methods: {
             getStatus(value) {
-                console.log(this.statuses);
                 if (this.statuses[value] !== undefined) {
                     return `Статус: ` + this.statuses[value];
                 }
