@@ -41,4 +41,21 @@ class Users
 
         return 0;
     }
+
+    public static function getUserInfo() :array
+    {
+        global $USER;
+
+        if($USER->IsAuthorized()){
+            return [
+                'fullName' => $USER->GetFullName(),
+                'email' => $USER->GetEmail(),
+                'isAuth' => true,
+            ];
+        }
+
+        return [
+            'isAuth' => false,
+        ];
+    }
 }

@@ -4,6 +4,8 @@ namespace Kolos\Studio\Sale;
 
 use Bitrix\Currency\CurrencyManager;
 use Bitrix\Main\Context;
+use Bitrix\Sale\Order;
+use Bitrix\Main\Grid\Declension;
 use Kolos\Studio\Sale\BasketService;
 
 class OrderService
@@ -25,7 +27,6 @@ class OrderService
 
     public function createOrder(): array
     {
-
         if ($this->canCreateOrder() !== true) {
             return [
                 'status' => false,
@@ -104,5 +105,78 @@ class OrderService
                 'error' => 'Системная ошибка, повторите попытку позже',
             ];
         }
+    }
+
+    public static function getUserOrder(): array
+    {
+        global $USER;
+
+        $result = [];
+
+        if ($USER->IsAuthorized()) {
+            $orders = Order::getList([
+                'filter' => [
+                    'USER_ID' => $USER->GetID(),
+                ],
+                'select' => ['ID'],
+            ])->fetchAll();
+
+            $productsDeclension = new Declension(' товар', ' товара', ' товаров');
+            foreach ($orders as $order) {
+
+                $order = Order::load($order['ID']);
+                echo $order->getField('CREATE_DATE') . PHP_EOL;
+                $item = [
+                    'ID' => $order->getId(),
+                    'DATE' => $order->getField('DATE_INSERT')->format('d.m.Y'),
+                    'PRICE' => price_format($order->getPrice()),
+                    'PRICE_FORMAT' => number_format($order->getPrice(), 2, '.', ' '),
+                    'STATUS_ID' => $order->getField('STATUS_ID'),
+                ];
+
+                $basket = $order->getBasket();
+
+                foreach ($basket as $basketItem){
+                    $item['basket'][] = [
+                        'id' => $basketItem->getProductId(),
+                        'name' => $basketItem->getField('NAME'),
+                        'price' => number_format($basketItem->getPrice(), 2, '.', ' '),
+                        'quantity' => $basketItem->getQuantity(),
+                        'amount' => number_format($basketItem->getPrice() * $basketItem->getQuantity(), 2, '.', ' '),
+                    ];
+                }
+
+                $item['COUNT_ITEMS_FULL'] = count($item['basket']);
+                $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get($item['COUNT_ITEMS_FULL']);
+
+                $item['COUNT_ITEMS'] = count($item['basket']) - 1;
+                $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get($item['COUNT_ITEMS']);
+
+                $item['PRODUCT_TITLE'] = current($item['basket'])['name'];
+
+                $result[] = $item;
+            }
+
+            return $result;
+        }
+
+        return [];
+    }
+
+    public static function getStatuses(): array
+    {
+        $arrStatus = [];
+
+        $statusResult = \Bitrix\Sale\Internals\StatusLangTable::getList([
+            'order' => ['STATUS.SORT' => 'ASC'],
+            'filter' => ['STATUS.TYPE' => 'O', 'LID' => LANGUAGE_ID],
+            'select' => ['STATUS_ID', 'NAME'],
+        ])->fetchAll();
+
+        foreach ($statusResult as $item) {
+            $arrStatus[$item['STATUS_ID']] = $item['NAME'];
+        }
+
+        return $arrStatus;
     }
 }
