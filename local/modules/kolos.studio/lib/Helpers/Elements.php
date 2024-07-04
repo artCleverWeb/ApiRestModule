@@ -90,7 +90,9 @@ class Elements
 
         $res = \CIBlockElement::GetList([], $filter, false, false, ['ID']);
 
-        return $res->fetch();
+        $result = $res->fetch();
+
+        return is_array($result) ? $result : [];
     }
 
     public static function getXmlCodeById(int $id, $iblockId = false): string

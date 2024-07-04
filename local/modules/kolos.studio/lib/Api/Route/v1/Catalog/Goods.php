@@ -13,6 +13,7 @@ class Goods extends BaseRoute
         'plantationCode' => 'Plantation',
         'colorCode' => 'Color',
         'length' => 'Length',
+        'countryCode' => 'Country',
     ];
 
     public function childProcess()
@@ -57,7 +58,7 @@ class Goods extends BaseRoute
                         $productClass->setDetailPicture('');
                         $productClass->setPreviewPicture();
                     }
-
+                    
                     foreach ($item as $keyProp => $value) {
                         if (isset($this->fields[$keyProp]) && !empty($this->fields[$keyProp])) {
                             if (!isset($value) || empty($value) || $value == 'null') {
@@ -131,7 +132,7 @@ class Goods extends BaseRoute
 
     protected function validateNameValue($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return parent::validateNameValue($value);
     }
 
     protected function validateItem(array $item, $key): bool

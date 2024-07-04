@@ -285,7 +285,7 @@ if ($isFilter) {
                         "PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
                         "PRODUCT_PROPS_VARIABLE" => $arParams["PRODUCT_PROPS_VARIABLE"],
                         "FILTER_NAME" => $arParams["FILTER_NAME"],
-                        "CACHE_TYPE" => $arParams["CACHE_TYPE"],
+                        "CACHE_TYPE" => 'N',//$arParams["CACHE_TYPE"],
                         "CACHE_TIME" => $arParams["CACHE_TIME"],
                         "CACHE_FILTER" => $arParams["CACHE_FILTER"],
                         "CACHE_GROUPS" => $arParams["CACHE_GROUPS"],

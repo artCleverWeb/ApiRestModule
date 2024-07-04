@@ -7,7 +7,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
         <?=user()->GetLogin();?>
     </span>
 </div>
-<a href="?logout=yes" class="user-header__link user-header__link_logout">
+<a href="/?logout=yes&<?=bitrix_sessid_get()?>" class="user-header__link user-header__link_logout">
     <span class="user-header__link-icon">
         <svg class="icon contacts-header__icon-canvas"><use xlink:href="#icon-logout"></use></svg>
     </span>

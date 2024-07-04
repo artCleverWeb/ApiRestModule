@@ -34,7 +34,6 @@ class Order
     public function store(array $data): bool
     {
         try {
-
             $statusId = $this->getStatusCode($data['status']);
 
             if (strlen($statusId) < 1) {
@@ -46,7 +45,7 @@ class Order
 
             $userId = \Kolos\Studio\Helpers\Users::getIdByXmlCode($data['clientCode']);
 
-            if($userId <1){
+            if ($userId < 1) {
                 throw new \ErrorException (
                     "Заказ {$this->orderXmlId}: не найден пользователь {$data['clientCode']}"
                 );
@@ -66,7 +65,7 @@ class Order
 
             $basketClass = new Basket($this->order);
 
-            if($basketClass->store($data['goods']) === false){
+            if ($basketClass->store($data['goods']) === false) {
                 throw new \ErrorException (
                     "Заказ {$this->orderXmlId}: при сохранении корзины возникли ошибки"
                 );
@@ -74,12 +73,19 @@ class Order
             }
 
             $this->order->setField('STATUS_ID', $statusId);
-            $result = $this->order->save();
 
-            if ($result->isSuccess()){
-                return true;
+            $propertyCollection = $this->order->getPropertyCollection();
+            $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
+            if ($property) {
+                $date = $data['dateAdd'] ? strtotime($data['dateAdd']) : time();
+                $property->setValue(date('d.m.Y H:i:s', $date));
             }
 
+            $result = $this->order->save();
+
+            if ($result->isSuccess()) {
+                return true;
+            }
         } catch (\Exception $exception) {
             throw new \ErrorException ($exception->getMessage());
             return false;

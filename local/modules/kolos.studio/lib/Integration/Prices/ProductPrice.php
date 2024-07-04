@@ -54,7 +54,7 @@ class ProductPrice
 
             return true;
         } catch (\Exception $error) {
-            throw new SystemException(implode(', ', $error->getMessage()));
+            throw new SystemException($error->getMessage());
             return false;
         }
     }

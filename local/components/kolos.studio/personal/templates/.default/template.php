@@ -241,7 +241,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <!--                        </a>-->
                     <!--                    </div>-->
                     <div class="user-mini__button-logout">
-                        <a href="/?logout=yes" class="button-a button-a_bg-4 user-mini__button-logout-link">
+                        <a href="/?logout=yes&<?=bitrix_sessid_get()?>" class="button-a button-a_bg-4 user-mini__button-logout-link">
                             Выход
                         </a>
                     </div>

@@ -38,7 +38,6 @@ class Basket
                 if (isset($this->saveBasket[$itemCode])) {
                     $updateInfo = $this->saveBasket[$itemCode];
 
-                    $item->setField('NAME', $updateInfo['name']);
                     $item->setField('QUANTITY', $updateInfo['quantity']);
                     $item->setField('PRICE', $updateInfo['price']);
                     $item->setField('BASE_PRICE', $updateInfo['price']);
@@ -223,12 +222,12 @@ class Basket
 
     private function validateCodeValue($value): bool
     {
-        return preg_match('/^([a-zA-Z0-9-]){2,25}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([a-fA-F0-9-]){35,37}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     private function validateNameValue($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-]){2,25}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     private function validateQuantityValue($value): bool

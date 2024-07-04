@@ -121,7 +121,7 @@ class Preorders extends BaseRoute
 
     protected function validateCodeValue($value): bool
     {
-        return preg_match('/^([a-zA-Z0-9-]){2,32}$/m', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return parent::validateCodeValue($value);
     }
 
     protected function validate(): bool

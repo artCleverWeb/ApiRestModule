@@ -86,7 +86,7 @@ abstract class BaseRoute implements IBaseRoute
 
     protected function validateNameValue($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё &-.\/(),+"’\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
     private function setRequest(): void

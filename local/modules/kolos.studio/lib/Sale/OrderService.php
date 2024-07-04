@@ -4,9 +4,13 @@ namespace Kolos\Studio\Sale;
 
 use Bitrix\Currency\CurrencyManager;
 use Bitrix\Main\Context;
+use Bitrix\Main\Loader;
 use Bitrix\Sale\Order;
 use Bitrix\Main\Grid\Declension;
 use Kolos\Studio\Sale\BasketService;
+use Bitrix\Catalog\ProductTable;
+
+Loader::includeModule('catalog');
 
 class OrderService
 {
@@ -82,6 +86,10 @@ class OrderService
         $order->setField('XML_ID', $this->orderXmlId);
         $order->setField('CURRENCY', $currencyCode);
 
+        $propertyCollection = $order->getPropertyCollection();
+        $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
+        $property?->setValue(date('d.m.Y H:i:s'));
+
         $order->setBasket($actualBasket);
         $order->doFinalAction(true);
         $result = $order->save();
@@ -92,6 +100,24 @@ class OrderService
         }
 
         if ($result->isSuccess()) {
+            foreach ($actualBasket as $item) {
+                $qnt = $item->getQuantity();
+                $oldValue = current(
+                    ProductTable::getRow([
+                        'filter' => [
+                            'ID' => $item->getProductId(),
+                        ],
+                        'select' => ['QUANTITY'],
+                    ])
+                );
+                $newVal = $oldValue - $qnt;
+
+                ProductTable::update(
+                    $item->getProductId(),
+                    ['QUANTITY' => $newVal < 0 ? 0 : $newVal]
+                );
+            }
+
             return [
                 'status' => true,
                 'orderId' => $order->getId(),
@@ -123,12 +149,19 @@ class OrderService
 
             $productsDeclension = new Declension(' товар', ' товара', ' товаров');
             foreach ($orders as $order) {
-
                 $order = Order::load($order['ID']);
-                echo $order->getField('CREATE_DATE') . PHP_EOL;
+
+                $propertyCollection = $order->getPropertyCollection();
+                $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
+
                 $item = [
                     'ID' => $order->getId(),
-                    'DATE' => $order->getField('DATE_INSERT')->format('d.m.Y'),
+                    'DATE' => ($property && $property->getValue()) ? date(
+                        "d.m.Y",
+                        strtotime($property->getValue())
+                    ) : $order->getField(
+                        'DATE_INSERT'
+                    )->format('d.m.Y'),
                     'PRICE' => price_format($order->getPrice()),
                     'PRICE_FORMAT' => number_format($order->getPrice(), 2, '.', ' '),
                     'STATUS_ID' => $order->getField('STATUS_ID'),
@@ -136,7 +169,7 @@ class OrderService
 
                 $basket = $order->getBasket();
 
-                foreach ($basket as $basketItem){
+                foreach ($basket as $basketItem) {
                     $item['basket'][] = [
                         'id' => $basketItem->getProductId(),
                         'name' => $basketItem->getField('NAME'),
@@ -147,7 +180,9 @@ class OrderService
                 }
 
                 $item['COUNT_ITEMS_FULL'] = count($item['basket']);
-                $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get($item['COUNT_ITEMS_FULL']);
+                $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get(
+                        $item['COUNT_ITEMS_FULL']
+                    );
 
                 $item['COUNT_ITEMS'] = count($item['basket']) - 1;
                 $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS'] . $productsDeclension->get($item['COUNT_ITEMS']);

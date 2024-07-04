@@ -50,7 +50,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <svg class="icon cart-mini__info-icon">
                     <use xlink:href="#icon-info"></use>
                 </svg>
-                Внимание! Товары в корзине не резервируются, и могут быть выкуплены другими пользователями. Для гарантии
+                Внимание! Товары в корзине не резервируются и могут быть выкуплены другими пользователями. Для гарантии
                 закупки оформите заказ:
             </div>
             <div class="cart-mini__buttons">
@@ -135,7 +135,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </a>
                 </div>
                 <div class="cart-mini__buttons-item cart-mini__buttons-item_orders">
-                    <a href="#" class="button-a button-a_bg-2 cart-mini__button">
+                    <a href="/personal/" class="button-a button-a_bg-2 cart-mini__button">
                         <div class="button-a__inner">
                             К заказам
                         </div>
@@ -330,6 +330,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             },
             updateItems() {
                 const _this = this
+                document.querySelectorAll('.amount-mini__input').forEach(product => {
+                    product.value = 0;
+                })
+
                 if (_this.basketItems) {
                     _this.basketItems.forEach(item => {
                         const products = document.querySelectorAll('[data-product-id="' + item.PRODUCT_ID + '"]')

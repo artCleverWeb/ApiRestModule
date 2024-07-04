@@ -46,11 +46,18 @@ class Extraorders extends BaseRoute
                     'price' => $basketItem->getPrice(),
                 ];
             }
+            $propertyCollection = $order->getPropertyCollection();
+            $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
 
             $result[] = [
                 'orderSiteCode' => $order->getField('XML_ID'),
                 'clientCode' => \Kolos\Studio\Helpers\Users::getXmlCodeById($order->getUserId()),
-                'date' => $order->getField('DATE_INSERT')->format("c"),
+                'date' => ($property && $property->getValue()) ? date(
+                    "c",
+                    strtotime($property->getValue())
+                ) : $order->getField(
+                    'DATE_INSERT'
+                )->format('c'),
                 'sum' => $order->getPrice(),
                 'status' => $arrStatus[$order->getField('STATUS_ID')],
                 'goods' => $basketInfo,
