@@ -38,6 +38,12 @@ if (isset($arResult['ITEM'])) {
                 </div>
                 <div class="product-mini-a__title">
                     <?= $item['NAME'] ?>
+                    <?php if(isset($item['DISPLAY_PROPERTIES']['NEW']['~VALUE']) && $item['DISPLAY_PROPERTIES']['NEW']['~VALUE'] == 'Y'):?>
+                        <br/><b>Новинка</b>
+                    <?php endif?>
+                    <?php if(isset($item['DISPLAY_PROPERTIES']['SPECIAL_OFFER']['~VALUE']) && $item['DISPLAY_PROPERTIES']['SPECIAL_OFFER']['~VALUE'] == 'Y'):?>
+                        <br/><b>Спецпредложение</b>
+                    <?php endif?>
                 </div>
             </div>
         </div>
@@ -67,7 +73,7 @@ if (isset($arResult['ITEM'])) {
                     Страна и плантация
                 </div>
                 <div class="product-mini-a__detail">
-                    <?= $item['DISPLAY_PROPERTIES']['PLANTATION']['DISPLAY_VALUE'] ?>
+                    <?= $item['DISPLAY_PROPERTIES']['COUNTRY']['DISPLAY_VALUE'] ?><?=mb_strlen($item['DISPLAY_PROPERTIES']['COUNTRY']['DISPLAY_VALUE']) && mb_strlen($item['DISPLAY_PROPERTIES']['PLANTATION']['DISPLAY_VALUE']) ? ', ' : ''?><?= $item['DISPLAY_PROPERTIES']['PLANTATION']['DISPLAY_VALUE'] ?>
                 </div>
             </div>
         </div>
@@ -107,10 +113,16 @@ if (isset($arResult['ITEM'])) {
         <div class="product-mini-a__cell product-mini-a__cell_1-6">
             <div class="product-mini-a__cell-inner">
                 <div class="product-mini-a__caption">
-                    Поставка
+                    Размер
                 </div>
                 <div class="product-mini-a__detail product-mini-a__detail_date">
-                    <?=$arParams['SUPPLY']?>
+                    <?php if($item['DISPLAY_PROPERTIES']['LENGTH_CODE']['DISPLAY_VALUE']):?>
+                        Д-<?= $item['DISPLAY_PROPERTIES']['LENGTH_CODE']['DISPLAY_VALUE'] ?>
+                    <?php endif;?>
+                    <br/>
+                    <?php if($item['DISPLAY_PROPERTIES']['WEIGHT_CODE']['DISPLAY_VALUE']):?>
+                        В-<?= $item['DISPLAY_PROPERTIES']['WEIGHT_CODE']['DISPLAY_VALUE'] ?>
+                    <?php endif;?>
                 </div>
             </div>
         </div>

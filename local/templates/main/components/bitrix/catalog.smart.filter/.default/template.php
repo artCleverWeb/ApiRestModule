@@ -40,89 +40,6 @@ $isCheked = false;
             <?php
             endforeach; ?>
             <?php
-            foreach ($arResult["ITEMS"] as $key => $arItem)//prices
-            {
-                $key = $arItem["ENCODED_ID"];
-                if (isset($arItem["PRICE"])):
-                    if ($arItem["VALUES"]["MAX"]["VALUE"] - $arItem["VALUES"]["MIN"]["VALUE"] <= 0) {
-                        continue;
-                    }
-
-                    $precision = 0;
-                    $step_num = 4;
-                    $step = ($arItem["VALUES"]["MAX"]["VALUE"] - $arItem["VALUES"]["MIN"]["VALUE"]) / $step_num;
-                    $prices = array();
-                    if (Bitrix\Main\Loader::includeModule("currency")) {
-                        for ($i = 0; $i < $step_num; $i++) {
-                            $prices[$i] = CCurrencyLang::CurrencyFormat(
-                                $arItem["VALUES"]["MIN"]["VALUE"] + $step * $i,
-                                $arItem["VALUES"]["MIN"]["CURRENCY"],
-                                false
-                            );
-                        }
-                        $prices[$step_num] = CCurrencyLang::CurrencyFormat(
-                            $arItem["VALUES"]["MAX"]["VALUE"],
-                            $arItem["VALUES"]["MAX"]["CURRENCY"],
-                            false
-                        );
-                    } else {
-                        $precision = $arItem["DECIMALS"] ? $arItem["DECIMALS"] : 0;
-                        for ($i = 0; $i < $step_num; $i++) {
-                            $prices[$i] = number_format(
-                                $arItem["VALUES"]["MIN"]["VALUE"] + $step * $i,
-                                $precision,
-                                ".",
-                                ""
-                            );
-                        }
-                        $prices[$step_num] = number_format($arItem["VALUES"]["MAX"]["VALUE"], $precision, ".", "");
-                    }
-                    ?>
-                    <div class="bx-filter-parameters-box filter__item <?php
-                    if (isset($arItem["DISPLAY_EXPANDED"]) && $arItem["DISPLAY_EXPANDED"] == "Y"): ?>expanded<?php
-                    endif ?>">
-                        <span class="bx-filter-container-modef"></span>
-                        <div class="bx-filter-parameters-box-title filter__item-title">
-                                Цена
-                            <svg class="icon filter__item-title-arrow">
-                                <use xlink:href="#icon-arrow-1"></use>
-                            </svg>
-                        </div>
-                        <div class="filter__item-data" data-role="bx_filter_block">
-                            <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["VALUE"] ?>"
-                                 data-max="<?= $arItem["VALUES"]["MAX"]["VALUE"] ?>"
-                                 data-start-from="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
-                                 data-start-to="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>">
-                                <div class="filter__slider-inputs">
-                                    <input type="text" class="filter__slider-input filter__slider-input_min"
-                                           placeholder="От"
-                                           name="<?= $arItem["VALUES"]["MIN"]["CONTROL_NAME"] ?>"
-                                           id="<?= $arItem["VALUES"]["MIN"]["CONTROL_ID"] ?>"
-                                           value="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
-                                           size="5"
-                                           onkeyup="smartFilter.keyup(this)"
-                                    />
-                                    <input type="text" class="filter__slider-input filter__slider-input_max"
-                                           placeholder="До"
-                                           name="<?= $arItem["VALUES"]["MAX"]["CONTROL_NAME"] ?>"
-                                           id="<?= $arItem["VALUES"]["MAX"]["CONTROL_ID"] ?>"
-                                           value="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>"
-                                           size="5"
-                                           onkeyup="smartFilter.keyup(this)"
-                                    />
-                                </div>
-                                <div class="filter__slider-captions">
-                                    <div class="filter__slider-caption filter__slider-caption_min"></div>
-                                    <div class="filter__slider-caption filter__slider-caption_max"></div>
-                                </div>
-                                <div class="filter__slider-scale"></div>
-                            </div>
-                        </div>
-                    </div>
-                <?php
-                endif;
-            }
-
             //not prices
             foreach ($arResult["ITEMS"] as $key => $arItem) {
                 if (
@@ -146,7 +63,7 @@ $isCheked = false;
                 endif ?>">
                     <span class="bx-filter-container-modef"></span>
                     <div class="bx-filter-parameters-box-title filter__item-title">
-                        <?= $arItem["NAME"] ?>
+                        <?= $arItem["CODE"] == 'PLANTATION' ? 'Производитель' :  $arItem["NAME"]?>
                         <svg class="icon filter__item-title-arrow">
                             <use xlink:href="#icon-arrow-1"></use>
                         </svg>
@@ -251,6 +168,90 @@ $isCheked = false;
                 </div>
                 <?php
             }
+
+            foreach ($arResult["ITEMS"] as $key => $arItem)//prices
+            {
+                $key = $arItem["ENCODED_ID"];
+                if (isset($arItem["PRICE"])):
+                    if ($arItem["VALUES"]["MAX"]["VALUE"] - $arItem["VALUES"]["MIN"]["VALUE"] <= 0) {
+                        continue;
+                    }
+
+                    $precision = 0;
+                    $step_num = 4;
+                    $step = ($arItem["VALUES"]["MAX"]["VALUE"] - $arItem["VALUES"]["MIN"]["VALUE"]) / $step_num;
+                    $prices = array();
+                    if (Bitrix\Main\Loader::includeModule("currency")) {
+                        for ($i = 0; $i < $step_num; $i++) {
+                            $prices[$i] = CCurrencyLang::CurrencyFormat(
+                                $arItem["VALUES"]["MIN"]["VALUE"] + $step * $i,
+                                $arItem["VALUES"]["MIN"]["CURRENCY"],
+                                false
+                            );
+                        }
+                        $prices[$step_num] = CCurrencyLang::CurrencyFormat(
+                            $arItem["VALUES"]["MAX"]["VALUE"],
+                            $arItem["VALUES"]["MAX"]["CURRENCY"],
+                            false
+                        );
+                    } else {
+                        $precision = $arItem["DECIMALS"] ? $arItem["DECIMALS"] : 0;
+                        for ($i = 0; $i < $step_num; $i++) {
+                            $prices[$i] = number_format(
+                                $arItem["VALUES"]["MIN"]["VALUE"] + $step * $i,
+                                $precision,
+                                ".",
+                                ""
+                            );
+                        }
+                        $prices[$step_num] = number_format($arItem["VALUES"]["MAX"]["VALUE"], $precision, ".", "");
+                    }
+                    ?>
+                    <div class="bx-filter-parameters-box filter__item <?php
+                    if (isset($arItem["DISPLAY_EXPANDED"]) && $arItem["DISPLAY_EXPANDED"] == "Y"): ?>expanded<?php
+                    endif ?>">
+                        <span class="bx-filter-container-modef"></span>
+                        <div class="bx-filter-parameters-box-title filter__item-title">
+                            Цена
+                            <svg class="icon filter__item-title-arrow">
+                                <use xlink:href="#icon-arrow-1"></use>
+                            </svg>
+                        </div>
+                        <div class="filter__item-data" data-role="bx_filter_block">
+                            <div class="filter__slider" data-min="<?= $arItem["VALUES"]["MIN"]["VALUE"] ?>"
+                                 data-max="<?= $arItem["VALUES"]["MAX"]["VALUE"] ?>"
+                                 data-start-from="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
+                                 data-start-to="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>">
+                                <div class="filter__slider-inputs">
+                                    <input type="text" class="filter__slider-input filter__slider-input_min"
+                                           placeholder="От"
+                                           name="<?= $arItem["VALUES"]["MIN"]["CONTROL_NAME"] ?>"
+                                           id="<?= $arItem["VALUES"]["MIN"]["CONTROL_ID"] ?>"
+                                           value="<?= $arItem["VALUES"]["MIN"]["HTML_VALUE"] ?>"
+                                           size="5"
+                                           onkeyup="smartFilter.keyup(this)"
+                                    />
+                                    <input type="text" class="filter__slider-input filter__slider-input_max"
+                                           placeholder="До"
+                                           name="<?= $arItem["VALUES"]["MAX"]["CONTROL_NAME"] ?>"
+                                           id="<?= $arItem["VALUES"]["MAX"]["CONTROL_ID"] ?>"
+                                           value="<?= $arItem["VALUES"]["MAX"]["HTML_VALUE"] ?>"
+                                           size="5"
+                                           onkeyup="smartFilter.keyup(this)"
+                                    />
+                                </div>
+                                <div class="filter__slider-captions">
+                                    <div class="filter__slider-caption filter__slider-caption_min"></div>
+                                    <div class="filter__slider-caption filter__slider-caption_max"></div>
+                                </div>
+                                <div class="filter__slider-scale"></div>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                endif;
+            }
+
             ?>
             <div class="filter__buttons">
                 <div class="filter__buttons-item filter__buttons-item_show">

@@ -14,6 +14,17 @@ class Goods extends BaseRoute
         'colorCode' => 'Color',
         'length' => 'Length',
         'countryCode' => 'Country',
+        'specialOffer' => 'SpecialOffer',
+        'new' => 'New',
+        'quantityInPack' => 'QuantityInPack',
+        'lengthCode' => 'LengthCode',
+        'weightCode' => 'WeightCode',
+        'typeCode' => 'TypeCode',
+    ];
+
+    private $preModerate = [
+        'specialOffer' => 'convertYesNo',
+        'new' => 'convertYesNo',
     ];
 
     public function childProcess()
@@ -58,7 +69,7 @@ class Goods extends BaseRoute
                         $productClass->setDetailPicture('');
                         $productClass->setPreviewPicture();
                     }
-                    
+
                     foreach ($item as $keyProp => $value) {
                         if (isset($this->fields[$keyProp]) && !empty($this->fields[$keyProp])) {
                             if (!isset($value) || empty($value) || $value == 'null') {
@@ -67,6 +78,11 @@ class Goods extends BaseRoute
                             $fieldName = $this->fields[$keyProp];
                             $methodGet = 'get' . $fieldName;
                             $methodSet = 'set' . $fieldName;
+
+                            if (isset($this->preModerate[$keyProp])) {
+                                $fnName = $this->preModerate[$keyProp];
+                                $value = $this->$fnName($value);
+                            }
 
                             if ($productClass->$methodGet()) {
                                 $productClass->$methodGet()->setValue($value);
@@ -80,6 +96,8 @@ class Goods extends BaseRoute
                     $result = $productClass->save();
 
                     if (!$result->isSuccess()) {
+                        print_r($result->getErrorMessages());
+                        die();
                         throw new SystemException(implode(', ', $result->getErrorMessages()));
                     }
 
@@ -103,6 +121,11 @@ class Goods extends BaseRoute
         $this->arResult = [
             'status' => true,
         ];
+    }
+
+    protected function convertYesNo($value): string
+    {
+        return (int)$value == 1 ? 'Y' : 'N';
     }
 
     protected function validate(): bool
@@ -137,7 +160,7 @@ class Goods extends BaseRoute
 
     protected function validateItem(array $item, $key): bool
     {
-        if(isset($item['length']) && intval($item['length']) < 0){
+        if (isset($item['length']) && intval($item['length']) < 0) {
             $this->isWarning = true;
             $this->WarninText .= "The $key element contains an empty value length" . PHP_EOL;
             return false;
@@ -173,7 +196,57 @@ class Goods extends BaseRoute
             return false;
         }
 
+        if (isset($item['specialOffer']) && $this->validateYesNot($item['specialOffer']) === false) {
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value specialOffer" . PHP_EOL;
+            return false;
+        }
+
+        if (isset($item['new']) && $this->validateYesNot($item['new']) === false) {
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value new" . PHP_EOL;
+            return false;
+        }
+
+        if (isset($item['quantityInPack']) && $this->validateInteger($item['quantityInPack']) === false) {
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value quantityInPack" . PHP_EOL;
+            return false;
+        }
+
+        if (isset($item['lengthCode']) && $this->validateCodeValue($item['lengthCode']) !== true) {
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value lengthCode" . PHP_EOL;
+            return false;
+        }
+
+        if (isset($item['weightCode']) && $this->validateCodeValue($item['weightCode']) !== true) {
+            $this->isWarning = true;
+            $this->WarninText .= "The $key element contains an empty value weightCode" . PHP_EOL;
+            return false;
+        }
+
         return true;
+    }
+
+    protected function validateInteger($val): bool
+    {
+        return preg_match(
+                '/^\d+$/m',
+                $val,
+                $matches,
+                PREG_OFFSET_CAPTURE
+            ) == 1;
+    }
+
+    protected function validateYesNot($val): bool
+    {
+        return preg_match(
+                '/^[0|1]$/m',
+                $val,
+                $matches,
+                PREG_OFFSET_CAPTURE
+            ) == 1;
     }
 
     protected function validatePictureUrl(string $url): bool

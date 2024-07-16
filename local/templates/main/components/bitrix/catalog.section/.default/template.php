@@ -156,7 +156,7 @@ $containerName = 'container-' . $navParams['NavNum'];
             </div>
             <div class="catalog__products-head-cell catalog__products-head-cell_1-6">
                 <div class="catalog__products-head-caption">
-                    ПОСТАВКА
+                    РАЗМЕР
                 </div>
             </div>
             <div class="catalog__products-head-cell catalog__products-head-cell_1-7">
