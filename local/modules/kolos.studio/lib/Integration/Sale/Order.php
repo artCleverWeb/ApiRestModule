@@ -91,6 +91,9 @@ class Order
 
                 $property = $propertyCollection->getItemByOrderPropertyCode('ID_SUPPLIES');
                 $property?->setValue($activeId);
+
+                $property = $propertyCollection->getItemByOrderPropertyCode('PREORDER');
+                $property?->setValue('Y');
             }
 
             $result = $this->order->save();

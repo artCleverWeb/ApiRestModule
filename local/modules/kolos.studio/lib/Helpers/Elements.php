@@ -23,6 +23,17 @@ class Elements
         return $res->fetch();
     }
 
+    public static function getNameById(int $id): string
+    {
+        $element = ElementTable::getRow([
+            'filter' => ['ID' => $id],
+            'select' => ['NAME', 'ID'],
+            "cache" => ["ttl" => 36000],
+        ]);
+
+        return isset($element['NAME']) ? $element['NAME'] : '';
+    }
+
     public static function filterOnlyActiveIds($ids, $iblockId = false)
     {
         $ids = array_wrap($ids);

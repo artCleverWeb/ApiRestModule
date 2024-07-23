@@ -691,7 +691,7 @@ a.breadcrumbs__item:hover {color: #DB4F4F; text-decoration: underline;}
 .order-mini:hover .order-mini__cell {background: rgba(0,0,0, 0.02);}
 
 .orders {}
-.orders__table {display: table; width: 100%; font-size: 14px; }
+.orders__table {display: table; width: 100%; font-size: 14px; margin-bottom: 30px;}
 .orders__table-cell {display: table-cell; background: #235441; border-left: 1px solid #fff; padding: 10px 10px; transition: background 0.2s ease;}
 .orders__table-cell:first-child {border-left: 0;}
 .orders__table-cell_1-1 {width: 120px;}

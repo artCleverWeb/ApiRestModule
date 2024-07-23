@@ -90,6 +90,17 @@ class OrderService
         $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
         $property?->setValue(date('d.m.Y H:i:s'));
 
+        $property = $propertyCollection->getItemByOrderPropertyCode('PREORDER');
+        $property?->setValue('N');
+
+        $active = current(\Kolos\Studio\Helpers\Elements::filterOnlyActive(IBLOCK_ID_SUPPLIES, 3));
+        if (is_array($active) && isset($active)) {
+            $activeId = $active['ID'];
+        }
+
+        $property = $propertyCollection->getItemByOrderPropertyCode('ID_SUPPLIES');
+        $property?->setValue($activeId);
+
         $order->setBasket($actualBasket);
         $order->doFinalAction(true);
         $result = $order->save();
@@ -141,65 +152,162 @@ class OrderService
         }
     }
 
+    protected static function formattedOrder(int $orderId): array
+    {
+        $productsDeclension = new Declension(' товар', ' товара', ' товаров');
+
+        $order = Order::load($orderId);
+
+        $propertyCollection = $order->getPropertyCollection();
+        $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
+
+        $item = [
+            'ID' => $order->getId(),
+            'DATE' => ($property && $property->getValue()) ? date(
+                "d.m.Y",
+                strtotime($property->getValue())
+            ) : $order->getField(
+                'DATE_INSERT'
+            )->format('d.m.Y'),
+            'PRICE' => price_format($order->getPrice()),
+            'PRICE_FORMAT' => number_format($order->getPrice(), 2, '.', ' '),
+            'STATUS_ID' => $order->getField('STATUS_ID'),
+            'IS_PREORDER' => $propertyCollection->getItemByOrderPropertyCode('PREORDER')?->getValue() == 'Y',
+            'SUPPLIES_ID' => $propertyCollection->getItemByOrderPropertyCode('ID_SUPPLIES')?->getValue(),
+            'SUPPLIES_NAME' => \Kolos\Studio\Helpers\Elements::getNameById($propertyCollection->getItemByOrderPropertyCode('ID_SUPPLIES')?->getValue()),
+        ];
+
+        $basket = $order->getBasket();
+
+        foreach ($basket as $basketItem) {
+            $item['basket'][] = [
+                'id' => $basketItem->getProductId(),
+                'name' => $basketItem->getField('NAME'),
+                'price' => number_format($basketItem->getPrice(), 2, '.', ' '),
+                'quantity' => $basketItem->getQuantity(),
+                'amount' => number_format($basketItem->getPrice() * $basketItem->getQuantity(), 2, '.', ' '),
+            ];
+        }
+
+        $item['COUNT_ITEMS_FULL'] = count($item['basket']);
+        $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get(
+                $item['COUNT_ITEMS_FULL']
+            );
+
+        $item['COUNT_ITEMS'] = count($item['basket']) - 1;
+        $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS'] . $productsDeclension->get($item['COUNT_ITEMS']);
+
+        $item['PRODUCT_TITLE'] = current($item['basket'])['name'];
+
+        return $item;
+    }
+
+    public static function getOrderList(array $filter,  int $limit = 50): array
+    {
+        return Order::getList([
+            'filter' => $filter,
+            'select' => ['ID'],
+            'limit' => $limit,
+            'group' => ['ID'],
+            'order' => [
+                'ID' => 'DESC'
+            ],
+            'runtime' => [
+                new \Bitrix\Main\Entity\ReferenceField(
+                    'PROPERTY_VAL',
+                    '\Bitrix\sale\Internals\OrderPropsValueTable',
+                    ["=this.ID" => "ref.ORDER_ID"],
+                    ["join_type" => "left"]
+                ),
+                new \Bitrix\Main\Entity\ReferenceField(
+                    'PROPERTY_VAL2',
+                    '\Bitrix\sale\Internals\OrderPropsValueTable',
+                    ["=this.ID" => "ref.ORDER_ID"],
+                    ["join_type" => "left"]
+                ),
+            ],
+            "cache" => [
+                "ttl" => 60,
+            ],
+        ])->fetchAll();
+    }
+
     public static function getUserOrder(): array
     {
         global $USER;
 
-        $result = [];
+        $result = [
+            'active' => [],
+            'unActive' => [],
+        ];
 
         if ($USER->IsAuthorized()) {
-            $orders = Order::getList([
-                'filter' => [
-                    'USER_ID' => $USER->GetID(),
-                ],
-                'select' => ['ID'],
-            ])->fetchAll();
+            $active = current(\Kolos\Studio\Helpers\Elements::filterOnlyActive(IBLOCK_ID_SUPPLIES, 3));
+            if (is_array($active) && isset($active)) {
+                $activeId = $active['ID'];
+            }
+            if ($activeId > 0) {
+                $orders = self::getOrderList(
+                    [
+                        'USER_ID' => $USER->GetID(),
+                        '=PROPERTY_VAL.CODE' => 'ID_SUPPLIES',
+                        '=PROPERTY_VAL.VALUE' => $activeId,
+                        '=PROPERTY_VAL2.CODE' => 'PREORDER',
+                        '=PROPERTY_VAL2.VALUE' => 'Y',
+                    ],
+                    100
+                );
 
-            $productsDeclension = new Declension(' товар', ' товара', ' товаров');
-            foreach ($orders as $order) {
-                $order = Order::load($order['ID']);
-
-                $propertyCollection = $order->getPropertyCollection();
-                $property = $propertyCollection->getItemByOrderPropertyCode('DATE_CREATE');
-
-                $item = [
-                    'ID' => $order->getId(),
-                    'DATE' => ($property && $property->getValue()) ? date(
-                        "d.m.Y",
-                        strtotime($property->getValue())
-                    ) : $order->getField(
-                        'DATE_INSERT'
-                    )->format('d.m.Y'),
-                    'PRICE' => price_format($order->getPrice()),
-                    'PRICE_FORMAT' => number_format($order->getPrice(), 2, '.', ' '),
-                    'STATUS_ID' => $order->getField('STATUS_ID'),
-                ];
-
-                $basket = $order->getBasket();
-
-                foreach ($basket as $basketItem) {
-                    $item['basket'][] = [
-                        'id' => $basketItem->getProductId(),
-                        'name' => $basketItem->getField('NAME'),
-                        'price' => number_format($basketItem->getPrice(), 2, '.', ' '),
-                        'quantity' => $basketItem->getQuantity(),
-                        'amount' => number_format($basketItem->getPrice() * $basketItem->getQuantity(), 2, '.', ' '),
-                    ];
+                foreach ($orders as $order) {
+                    $result['active'][] = self::formattedOrder($order['ID']);
                 }
 
-                $item['COUNT_ITEMS_FULL'] = count($item['basket']);
-                $item['COUNT_ITEMS_FULL_TEXT'] = $item['COUNT_ITEMS_FULL'] . $productsDeclension->get(
-                        $item['COUNT_ITEMS_FULL']
-                    );
+                $orders = self::getOrderList(
+                    [
+                        'USER_ID' => $USER->GetID(),
+                        '=PROPERTY_VAL.CODE' => 'ID_SUPPLIES',
+                        '=PROPERTY_VAL.VALUE' => $activeId,
+                        '=PROPERTY_VAL2.CODE' => 'PREORDER',
+                        '!PROPERTY_VAL2.VALUE' => 'Y',
+                    ],
+                    50
+                );
 
-                $item['COUNT_ITEMS'] = count($item['basket']) - 1;
-                $item['COUNT_ITEMS_TEXT'] = $item['COUNT_ITEMS'] . $productsDeclension->get($item['COUNT_ITEMS']);
-
-                $item['PRODUCT_TITLE'] = current($item['basket'])['name'];
-
-                $result[] = $item;
+                foreach ($orders as $order) {
+                    $result['active'][] = self::formattedOrder($order['ID']);
+                }
             }
 
+
+            $orders = self::getOrderList(
+                [
+                    'USER_ID' => $USER->GetID(),
+                    '=PROPERTY_VAL.CODE' => 'ID_SUPPLIES',
+                    '!PROPERTY_VAL.VALUE' => $activeId,
+                    '=PROPERTY_VAL2.CODE' => 'PREORDER',
+                    '=PROPERTY_VAL2.VALUE' => 'Y',
+                ],
+                100
+            );
+
+            foreach ($orders as $order) {
+                $result['unActive'][] = self::formattedOrder($order['ID']);
+            }
+
+            $orders = self::getOrderList(
+                [
+                    'USER_ID' => $USER->GetID(),
+                    '=PROPERTY_VAL.CODE' => 'ID_SUPPLIES',
+                    '!PROPERTY_VAL.VALUE' => $activeId,
+                    '=PROPERTY_VAL2.CODE' => 'PREORDER',
+                    '!PROPERTY_VAL2.VALUE' => 'Y',
+                ],
+                50
+            );
+
+            foreach ($orders as $order) {
+                $result['unActive'][] = self::formattedOrder($order['ID']);
+            }
             return $result;
         }
 
