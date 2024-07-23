@@ -101,7 +101,7 @@ class Basket
                 return false;
             }
 
-            if ($this->validateNameValue($item['name']) === false) {
+            if ($this->validateNameValueLength($item['name']) === false) {
                 throw new \ErrorException (
                     "Ошибка подготовки корзины: Название товара {$item['name']} не соответствует маске"
                 );
@@ -228,6 +228,11 @@ class Basket
     private function validateNameValue($value): bool
     {
         return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+    }
+
+    private function validateNameValueLength($value): bool
+    {
+        return mb_strlen($value) >= 2 && mb_strlen($value) <= 100;
     }
 
     private function validateQuantityValue($value): bool
