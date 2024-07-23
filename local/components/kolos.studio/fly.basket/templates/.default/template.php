@@ -24,8 +24,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             </div>
                         </div>
                         <div class="product-mini-b__cell product-mini-b__cell_1-2">
-                            <div class="amount-mini product-mini-b__amount" data-step="{{ basketItem.STEP }}"
-                                 data-min="0" data-max="{{ basketItem.MAX }}">
+                            <div class="amount-mini product-mini-b__amount" :data-step="basketItem.STEP"
+                                 data-min="0" :data-max="basketItem.MAX">
                                 <button type="button"
                                         class="amount-mini__button amount-mini__button_decrement"
                                         @click="decrement"></button>
@@ -250,6 +250,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                 let value = +Number(product.value);
 
+                const step = +parent.dataset.step || 1;
                 const min = +parent.dataset.min || 0;
                 const max = +parent.dataset.max || null;
 
@@ -259,6 +260,12 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     value = max;
                 }
 
+                if(step > 1 &&  value % step != 0){
+                    value = value - value % step;
+                }
+
+                product.value = value;
+                
                 _this.updateItem(product);
             },
             updateItem(product, updateItems = true) {

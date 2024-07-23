@@ -73,8 +73,8 @@ class BasketService
             $productId = $product['PRODUCT_ID'];
 
             if (isset($productInfo[$productId])) {
-                $product['STEP'] = $productInfo[$productId]['PROPERTY_AMOUNT_IN_PACK_VALUE']
-                    ? $productInfo[$productId]['PROPERTY_AMOUNT_IN_PACK_VALUE'] : 1;
+                $product['STEP'] = $productInfo[$productId]['PROPERTY_QUANTITY_IN_PACK_VALUE']
+                    ? $productInfo[$productId]['PROPERTY_QUANTITY_IN_PACK_VALUE'] : 111;
 
                 $product['MAX'] = $productInfo[$productId]['QUANTITY']
                     ? $productInfo[$productId]['QUANTITY'] : 0;
@@ -163,10 +163,12 @@ class BasketService
     {
         \Bitrix\Main\Loader::includeModule('sale');
 
+        /** @var Basket $basket */
         $basket = self::getInstance()->getBasket();
 
         $basketItem = self::getItemByProductId($id, $basket);
 
+        /** @var $basketItem BasketItem */
         if ($basketItem === null) {
             $productInfo = ProductService::getAvail([
                 'ID' => $id,

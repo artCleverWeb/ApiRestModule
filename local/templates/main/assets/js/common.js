@@ -266,6 +266,10 @@ function amountInit($amount) {
             amount.value = amount.max;
         }
 
+        if(amount.step > 1 &&  amount.value % amount.step != 0){
+            amount.value = amount.value - amount.value % amount.step;
+        }
+
         amount.$input.val(amount.value);
 
     });
