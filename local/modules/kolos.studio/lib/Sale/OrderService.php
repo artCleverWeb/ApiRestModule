@@ -54,7 +54,7 @@ class OrderService
             ];
         }
 
-        $actualBasket = BasketService::getInstance()->getBasket();
+        $actualBasket = BasketService::getInstance()->actualBasket();
         $actualBasketItems = $oldBasket->getBasketItems();
 
         foreach ($actualBasketItems as $item) {
@@ -110,12 +110,19 @@ class OrderService
                         'select' => ['QUANTITY'],
                     ])
                 );
-                $newVal = $oldValue - $qnt;
+                $newVal = $oldValue;
 
-                ProductTable::update(
-                    $item->getProductId(),
-                    ['QUANTITY' => $newVal < 0 ? 0 : $newVal]
-                );
+//                $newVal = $oldValue - $qnt;
+
+//                ProductTable::update(
+//                    $item->getProductId(),
+//                    ['QUANTITY' => $newVal < 0 ? 0 : $newVal]
+//                );
+
+                $productsAmount[] = [
+                    'productId' => $item->getProductId(),
+                    'amount' => $newVal < 0 ? 0 : $newVal,
+                ];
             }
 
             return [
@@ -124,6 +131,7 @@ class OrderService
                 'clearList' => $oldBasketProducts,
                 'orderPrice' => price_format($order->getPrice()),
                 'clearPrice' => $clearPrice > 0 ? price_format($clearPrice) : 0,
+                'productsAmount' => $productsAmount,
             ];
         } else {
             return [

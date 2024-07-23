@@ -184,7 +184,7 @@ class Goods extends BaseRoute
             return false;
         }
 
-        if ($this->validateNameValue($item['name']) !== true) {
+        if ($this->validateNameValueLength($item['name']) !== true) {
             $this->isWarning = true;
             $this->WarninText .= "In the $key element, the name value does not satisfy the mask" . PHP_EOL;
             return false;

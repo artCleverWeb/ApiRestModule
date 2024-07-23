@@ -108,10 +108,12 @@ class BasketService
             /** @var BasketItem $item */
             foreach ($basketItems as $item) {
                 $product = $productInfo[$item->getProductId()];
-
-//                if ($product['AVAILABLE'] != 'Y' || $product['ACTIVE'] != 'Y') {
-//                    $item->delete();
-//                }
+                if($product['QUANTITY'] <= 0){
+                    $item?->delete();
+                }
+                elseif($item->getQuantity() > $product['QUANTITY']){
+                    $item->setField('QUANTITY', $product['QUANTITY']);
+                }
             }
 
             $basket->save();
@@ -166,19 +168,30 @@ class BasketService
         $basketItem = self::getItemByProductId($id, $basket);
 
         if ($basketItem === null) {
-            $basketItem = $basket->createItem('catalog', $id);
+            $productInfo = ProductService::getAvail([
+                'ID' => $id,
+                'IBLOCK_ID' => IBLOCK_ID_CATALOG,
+            ]);
 
-            $fields = [
-                'QUANTITY' => $quantity,
-                'CURRENCY' => CurrencyManager::getBaseCurrency(),
-                'LID' => Context::getCurrent()->getSite(),
-                'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProviderCustom',
-            ];
-//            print_r($fields);
-//            die();
-            $basketItem->setFields($fields);
+            if($productInfo[$id]['QUANTITY'] >= 0) {
 
-            $basket->addItem($basketItem);
+                if($quantity > $productInfo[$id]['QUANTITY']){
+                    $quantity = $productInfo[$id]['QUANTITY'];
+                }
+
+                $basketItem = $basket->createItem('catalog', $id);
+
+                $fields = [
+                    'QUANTITY' => $quantity,
+                    'CURRENCY' => CurrencyManager::getBaseCurrency(),
+                    'LID' => Context::getCurrent()->getSite(),
+                    'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProviderCustom',
+                ];
+
+                $basketItem->setFields($fields);
+
+                $basket->addItem($basketItem);
+            }
         }
 
         $res = $basket->save();
@@ -190,6 +203,16 @@ class BasketService
 
     public function updateBasket($id, $quantity)
     {
+        $productInfo = ProductService::getAvail([
+            'ID' => $id,
+            'IBLOCK_ID' => IBLOCK_ID_CATALOG,
+        ]);
+
+        if($productInfo[$id]['QUANTITY'] < $quantity) {
+            $quantity = $productInfo[$id]['QUANTITY'];
+        }
+
+
         if ($quantity <= 0) {
             return $this->deleteItem($id, $quantity);
         }
@@ -214,7 +237,7 @@ class BasketService
 
         if ($quantity < 1) {
             $item = $basket->getExistsItem('catalog', $id);
-            $item->delete();
+            $item?->delete();
         } else {
             if ($item = $basket->getExistsItem('catalog', $id)) {
                 $newQty = $item->getQuantity();

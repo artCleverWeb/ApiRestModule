@@ -81,6 +81,18 @@ class Order
                 $property->setValue(date('d.m.Y H:i:s', $date));
             }
 
+            if($this->order->isNew()){
+                $activeId = 0;
+
+                $active = current(\Kolos\Studio\Helpers\Elements::filterOnlyActive(IBLOCK_ID_SUPPLIES, 3));
+                if(is_array($active) && isset($active)){
+                    $activeId = $active['ID'];
+                }
+
+                $property = $propertyCollection->getItemByOrderPropertyCode('ID_SUPPLIES');
+                $property?->setValue($activeId);
+            }
+
             $result = $this->order->save();
 
             if ($result->isSuccess()) {

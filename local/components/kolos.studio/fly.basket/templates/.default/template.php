@@ -193,6 +193,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             _this.clearItems = response.data.clearList || {}
                             _this.clearPrice = response.data.clearPrice || 0
                             _this.basket = {}
+                            _this.updateAmount(response.data.productsAmount)
+
                             document.getElementById('js-cart-mini').classList.toggle('expanded')
 
                             document.querySelectorAll('.amount-mini__input').forEach(product => {
@@ -205,6 +207,17 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     }, function (error) {
                         console.log(error)
                     })
+            },
+            updateAmount(items) {
+
+                items.forEach(item => {
+                    const products = document.querySelectorAll('[data-amount-id="' + item.productId + '"]')
+
+                    products.forEach(product => {
+                        product.textContent = item.amount;
+                    })
+                })
+
             },
             toggle() {
                 document.getElementById('js-cart-mini').classList.toggle('expanded')

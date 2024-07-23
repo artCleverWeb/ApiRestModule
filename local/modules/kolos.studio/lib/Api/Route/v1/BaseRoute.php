@@ -89,6 +89,11 @@ abstract class BaseRoute implements IBaseRoute
         return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
     }
 
+    protected function validateNameValueLength($value): bool
+    {
+        return mb_strlen($value) >= 2 && mb_strlen($value) <= 100;
+    }
+
     private function setRequest(): void
     {
         $this->arRequest = $this->parent->arRequest;

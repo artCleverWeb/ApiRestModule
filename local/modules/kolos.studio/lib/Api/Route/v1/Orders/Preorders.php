@@ -13,6 +13,7 @@ class Preorders extends BaseRoute
     public function childProcess()
     {
         foreach ($this->arRequest as $key => $item) {
+            $item['orderSiteCode'] = md5($item['clientCode'] . $item['dateAdd']);
             if ($this->validateItem($item, $key) === true) {
                 try {
                     $order = new \Kolos\Studio\Integration\Sale\Order($item['orderSiteCode']);
@@ -43,11 +44,11 @@ class Preorders extends BaseRoute
             return false;
         }
 
-        if ($this->validateCodeValue($item['orderSiteCode']) !== true) {
-            $this->isWarning = true;
-            $this->WarninText .= "In the $key element, the orderSiteCode value does not satisfy the mask" . PHP_EOL;
-            return false;
-        }
+//        if ($this->validateCodeValue($item['orderSiteCode']) !== true) {
+//            $this->isWarning = true;
+//            $this->WarninText .= "In the $key element, the orderSiteCode value does not satisfy the mask" . PHP_EOL;
+//            return false;
+//        }
 
         if (!isset($item['clientCode']) || empty($item['clientCode'])) {
             $this->isWarning = true;
@@ -139,7 +140,7 @@ class Preorders extends BaseRoute
         $firstLine = current($this->arRequest);
 
         $keysRequest = array_keys($firstLine);
-        $keysNeed = ['orderSiteCode', 'clientCode', 'dateAdd', 'status', 'sum', 'goods'];
+        $keysNeed = ['clientCode', 'dateAdd', 'status', 'sum', 'goods'];
 
         if (count(array_diff($keysNeed, $keysRequest)) > 0) {
             $this->setError(400, 'The request structure is not valid!');

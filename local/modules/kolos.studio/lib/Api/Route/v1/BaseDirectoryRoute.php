@@ -41,7 +41,6 @@ trait BaseDirectoryRoute
 
     protected function validateItem(array $item, $key): bool
     {
-
         if (!isset($item['code']) || empty($item['code'])) {
             $this->isWarning = true;
             $this->WarninText .= "The $key element contains an empty value code" . PHP_EOL;
@@ -60,7 +59,7 @@ trait BaseDirectoryRoute
             return false;
         }
 
-        if ($this->validateNameValueTrait($item['name']) !== true) {
+        if ($this->validateNameValueLengthTrait($item['name']) !== true) {
             $this->isWarning = true;
             $this->WarninText .= "In the $key element, the name value does not satisfy the mask" . PHP_EOL;
             return false;
@@ -101,7 +100,17 @@ trait BaseDirectoryRoute
 
     private function validateNameValueTrait($value): bool
     {
-        return preg_match('/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u', $value, $matches, PREG_OFFSET_CAPTURE) == 1;
+        return preg_match(
+                '/^([а-яА-Яa-zA-Z0-9Ёё !&-.`’\/(),+"\']){2,100}$/u',
+                $value,
+                $matches,
+                PREG_OFFSET_CAPTURE
+            ) == 1;
+    }
+
+    private function validateNameValueLengthTrait($value): bool
+    {
+        return mb_strlen($value) >= 2 && mb_strlen($value) <= 100;
     }
 
     protected function fill(array $data): array
