@@ -97,8 +97,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                             </div>
 
                                             <div class="order-popup__info">
-                                                <div class="order-popup__info-item" v-html="getStatus(order.STATUS_ID)">
-                                                </div>
+<!--                                                <div class="order-popup__info-item" v-html="getStatus(order.STATUS_ID)">-->
+<!--                                                </div>-->
                                                 <div class="order-popup__info-item">
                                                     Клиент: {{user.fullName}}, {{user.email}}
                                                 </div>
