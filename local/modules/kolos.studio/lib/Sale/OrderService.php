@@ -255,7 +255,7 @@ class OrderService
                         '=PROPERTY_VAL2.CODE' => 'PREORDER',
                         '=PROPERTY_VAL2.VALUE' => 'Y',
                     ],
-                    100
+                    1
                 );
 
                 foreach ($orders as $order) {

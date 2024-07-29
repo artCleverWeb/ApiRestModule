@@ -85,6 +85,7 @@ if (isset($arResult['ITEM'])) {
                 </div>
             </div>
         </div>
+        <?php /*
         <div class="product-mini-a__cell product-mini-a__cell_1-9">
             <div class="product-mini-a__cell-inner">
                 <div class="product-mini-a__caption">
@@ -95,6 +96,7 @@ if (isset($arResult['ITEM'])) {
                 </div>
             </div>
         </div>
+        */?>
         <div class="product-mini-a__cell product-mini-a__cell_1-5">
             <div class="product-mini-a__cell-inner">
                 <div class="product-mini-a__caption">

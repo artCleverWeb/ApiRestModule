@@ -48,7 +48,7 @@ class Users
 
         if($USER->IsAuthorized()){
             return [
-                'fullName' => $USER->GetFullName(),
+                'fullName' => $USER->GetFirstName() . " " . $USER->GetSecondName() . " " . $USER->GetLastName(),
                 'email' => $USER->GetEmail(),
                 'isAuth' => true,
             ];

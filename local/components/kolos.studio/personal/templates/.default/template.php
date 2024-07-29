@@ -28,10 +28,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <div class="orders__table" v-if="ordersList.length > 0">
                             <div class="headline cabinet__head">
                                 <h1 class="title headline__title cabinet__title" v-if="state=='active'">
-                                    Активные
+                                    Активные заказы
                                 </h1>
                                 <h1 class="title headline__title cabinet__title" v-else>
-                                    Архивные
+                                    Архивные заказы
                                 </h1>
                             </div>
                             <div class="orders__table-head">
@@ -97,8 +97,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                             </div>
 
                                             <div class="order-popup__info">
-<!--                                                <div class="order-popup__info-item" v-html="getStatus(order.STATUS_ID)">-->
-<!--                                                </div>-->
+                                                <!--                                                <div class="order-popup__info-item" v-html="getStatus(order.STATUS_ID)">-->
+                                                <!--                                                </div>-->
                                                 <div class="order-popup__info-item">
                                                     Клиент: {{user.fullName}}, {{user.email}}
                                                 </div>
@@ -184,39 +184,40 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                             </span>
                                             </div>
 
-                                            <!--                                        <div class="order-popup__buttons">-->
-                                            <!--                                            <div class="order-popup__buttons-item order-popup__buttons-item_close">-->
-                                            <!--                                                <a href="#" class="button-a button-a_bg-4 order-popup__button">-->
-                                            <!--															<span class="button-a__text">-->
-                                            <!--																Выйти-->
-                                            <!--															</span>-->
-                                            <!--                                                </a>-->
-                                            <!--                                            </div>-->
-                                            <!--                                            <div class="order-popup__buttons-item order-popup__buttons-item_cancell">-->
-                                            <!--                                                <a href="#"-->
-                                            <!--                                                   class="button-a button-a_bg-4 button-a_icon order-popup__button">-->
-                                            <!--															<span class="button-a__icon">-->
-                                            <!--																<svg class="icon-svg popup__button-close-icon"><use-->
-                                            <!--                                                                            xlink:href="#icon-cancellation"></use></svg>-->
-                                            <!--															</span>-->
-                                            <!--                                                    <span class="button-a__text">-->
-                                            <!--																Отменить-->
-                                            <!--															</span>-->
-                                            <!--                                                </a>-->
-                                            <!--                                            </div>-->
-                                            <!--                                            <div class="order-popup__buttons-item order-popup__buttons-item_edit">-->
-                                            <!--                                                <a href="#"-->
-                                            <!--                                                   class="button-a button-a_bg-4 button-a_icon order-popup__button">-->
-                                            <!--															<span class="button-a__icon">-->
-                                            <!--																<svg class="icon-svg popup__button-close-icon"><use-->
-                                            <!--                                                                            xlink:href="#icon-edit"></use></svg>-->
-                                            <!--															</span>-->
-                                            <!--                                                    <span class="button-a__text">-->
-                                            <!--																Редактировать-->
-                                            <!--															</span>-->
-                                            <!--                                                </a>-->
-                                            <!--                                            </div>-->
-                                            <!--                                        </div>-->
+                                            <div class="order-popup__buttons">
+                                                <div class="order-popup__buttons-item order-popup__buttons-item_close">
+                                                    <a href="/?logout=yes&<?= bitrix_sessid_get() ?>"
+                                                       class="button-a button-a_bg-4 order-popup__button">
+                                                        <span class="button-a__text">
+                                                            Выйти
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <!--                                            <div class="order-popup__buttons-item order-popup__buttons-item_cancell">-->
+                                                <!--                                                <a href="#"-->
+                                                <!--                                                   class="button-a button-a_bg-4 button-a_icon order-popup__button">-->
+                                                <!--															<span class="button-a__icon">-->
+                                                <!--																<svg class="icon-svg popup__button-close-icon"><use-->
+                                                <!--                                                                            xlink:href="#icon-cancellation"></use></svg>-->
+                                                <!--															</span>-->
+                                                <!--                                                    <span class="button-a__text">-->
+                                                <!--																Отменить-->
+                                                <!--															</span>-->
+                                                <!--                                                </a>-->
+                                                <!--                                            </div>-->
+                                                <!--                                            <div class="order-popup__buttons-item order-popup__buttons-item_edit">-->
+                                                <!--                                                <a href="#"-->
+                                                <!--                                                   class="button-a button-a_bg-4 button-a_icon order-popup__button">-->
+                                                <!--															<span class="button-a__icon">-->
+                                                <!--																<svg class="icon-svg popup__button-close-icon"><use-->
+                                                <!--                                                                            xlink:href="#icon-edit"></use></svg>-->
+                                                <!--															</span>-->
+                                                <!--                                                    <span class="button-a__text">-->
+                                                <!--																Редактировать-->
+                                                <!--															</span>-->
+                                                <!--                                                </a>-->
+                                                <!--                                            </div>-->
+                                            </div>
 
                                             <button type="button" class="popup__button-close">
                                                 <svg class="icon-svg popup__button-close-icon">

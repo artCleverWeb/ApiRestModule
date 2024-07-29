@@ -3,8 +3,29 @@
  * @var $arResult
  */
 
-if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) {
+    die();
+}
 
-$arParams["FILTER_VIEW_MODE"] = (isset($arParams["FILTER_VIEW_MODE"]) && toUpper($arParams["FILTER_VIEW_MODE"]) == "HORIZONTAL") ? "HORIZONTAL" : "VERTICAL";
-$arParams["POPUP_POSITION"] = (isset($arParams["POPUP_POSITION"]) && in_array($arParams["POPUP_POSITION"], array("left", "right"))) ? $arParams["POPUP_POSITION"] : "left";
+$arParams["FILTER_VIEW_MODE"] = (isset($arParams["FILTER_VIEW_MODE"]) && toUpper(
+        $arParams["FILTER_VIEW_MODE"]
+    ) == "HORIZONTAL") ? "HORIZONTAL" : "VERTICAL";
+$arParams["POPUP_POSITION"] = (isset($arParams["POPUP_POSITION"]) && in_array(
+        $arParams["POPUP_POSITION"],
+        array("left", "right")
+    )) ? $arParams["POPUP_POSITION"] : "left";
 $arResult["JS_FILTER_PARAMS"]['SEF_DEL_FILTER_URL'] = $arResult['FORM_ACTION'];
+
+foreach ($arResult['ITEMS'] as &$item) {
+    if ($item['DISPLAY_TYPE'] == 'F') {
+        if ($item['CODE'] == 'LENGTH_CODE') {
+            usort($item['VALUES'], function ($a, $b) {
+                return $a['VALUE'] - $b['VALUE'];
+            });
+        } else {
+            usort($item['VALUES'], function ($a, $b) {
+                return strcmp($a['VALUE'], $b['VALUE']);
+            });
+        }
+    }
+}

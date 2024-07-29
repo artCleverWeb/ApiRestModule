@@ -20,6 +20,7 @@ class Goods extends BaseRoute
         'lengthCode' => 'LengthCode',
         'weightCode' => 'WeightCode',
         'typeCode' => 'TypeCode',
+        'quantityInPallet' => 'AmountInPallet',
     ];
 
     private $preModerate = [
@@ -96,8 +97,6 @@ class Goods extends BaseRoute
                     $result = $productClass->save();
 
                     if (!$result->isSuccess()) {
-                        print_r($result->getErrorMessages());
-                        die();
                         throw new SystemException(implode(', ', $result->getErrorMessages()));
                     }
 
@@ -107,6 +106,8 @@ class Goods extends BaseRoute
                             "VAT_ID" => 1,
                             "VAT_INCLUDED" => "Y",
                             "TYPE " => \Bitrix\Catalog\ProductTable::TYPE_PRODUCT,
+                            'AVAILABLE' => 'Y',
+                            'MEASURE' => 5,
                         ]);
                     }
 

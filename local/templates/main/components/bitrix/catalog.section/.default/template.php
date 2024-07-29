@@ -144,11 +144,13 @@ $containerName = 'container-' . $navParams['NavNum'];
                     СТРАНА И ПЛАНТАЦИЯ
                 </div>
             </div>
+            <?php /*
             <div class="catalog__products-head-cell catalog__products-head-cell_1-9">
                 <div class="catalog__products-head-caption">
                     ДЛИНА
                 </div>
             </div>
+            */?>
             <div class="catalog__products-head-cell catalog__products-head-cell_1-5">
                 <div class="catalog__products-head-caption">
                     ДОСТУПНО
