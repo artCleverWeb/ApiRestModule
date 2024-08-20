@@ -8,6 +8,7 @@ use Kolos\Studio\Api\Route\v1\BaseRoute;
 class Goods extends BaseRoute
 {
     private $productClass;
+
     private $fields = [
         'varietieCode' => 'Varientie',
         'plantationCode' => 'Plantation',
@@ -73,22 +74,41 @@ class Goods extends BaseRoute
 
                     foreach ($item as $keyProp => $value) {
                         if (isset($this->fields[$keyProp]) && !empty($this->fields[$keyProp])) {
-                            if (!isset($value) || empty($value) || $value == 'null') {
-                                $value = '';
-                            }
                             $fieldName = $this->fields[$keyProp];
                             $methodGet = 'get' . $fieldName;
                             $methodSet = 'set' . $fieldName;
 
-                            if (isset($this->preModerate[$keyProp])) {
-                                $fnName = $this->preModerate[$keyProp];
-                                $value = $this->$fnName($value);
-                            }
+                            if ($keyProp == 'colorCode') {
+                                $methodAdd = 'addTo' . $fieldName;
+                                
+                                if ($productClass->$methodGet()) {
+                                    foreach ($productClass->$methodGet() as $valueObject) {
+                                        $valueObject->delete();
+                                    }
+                                }
 
-                            if ($productClass->$methodGet()) {
-                                $productClass->$methodGet()->setValue($value);
+                                $value = array_map('trim', explode(',', $value));
+
+                                if (count($value) > 0) {
+                                    foreach ($value as $val) {
+                                        $productClass->$methodAdd(new \Bitrix\Iblock\ORM\PropertyValue($val));
+                                    }
+                                }
                             } else {
-                                $productClass->$methodSet($value);
+                                if (!isset($value) || empty($value) || $value == 'null') {
+                                    $value = '';
+                                }
+
+                                if (isset($this->preModerate[$keyProp])) {
+                                    $fnName = $this->preModerate[$keyProp];
+                                    $value = $this->$fnName($value);
+                                }
+
+                                if ($productClass->$methodGet()) {
+                                    $productClass->$methodGet()->setValue($value);
+                                } else {
+                                    $productClass->$methodSet($value);
+                                }
                             }
                         }
                     }

@@ -577,7 +577,6 @@ if (!function_exists('getColorProduct')) {
                     'ID',
                     'UF_NAME',
                     'UF_COLOR1',
-                    'UF_COLOR2',
                 ],
             ]);
 

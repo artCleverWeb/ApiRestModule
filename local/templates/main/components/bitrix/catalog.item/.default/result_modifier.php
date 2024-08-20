@@ -5,15 +5,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     die();
 }
 $item = &$arResult['ITEM'];
-if ($item['DISPLAY_PROPERTIES']['COLOR']['VALUE']) {
-    $color = getColorProduct($item['DISPLAY_PROPERTIES']['COLOR']['VALUE']);
 
-    if (isset($color['UF_COLOR1'])) {
-        $item['DISPLAY_PROPERTIES']['COLOR']['COLOR'] = $color['UF_COLOR1'];
-    } elseif (isset($color['UF_COLOR2'])) {
-        $item['DISPLAY_PROPERTIES']['COLOR']['COLOR'] = $color['UF_COLOR2'];
-    } else {
-        $item['DISPLAY_PROPERTIES']['COLOR']['COLOR'] = '';
+if ($item['DISPLAY_PROPERTIES']['COLOR']['VALUE']) {
+    foreach ($item['DISPLAY_PROPERTIES']['COLOR']['VALUE'] as &$value) {
+        $value = getColorProduct($value);
     }
 }
 
@@ -30,7 +25,6 @@ if (isset($item['PREVIEW_PICTURE']['SRC'])) {
         ],
         BX_RESIZE_IMAGE_PROPORTIONAL
     )['src'];
-}
-else{
+} else {
     $item['PREVIEW_PICTURE']['SRC'] = SITE_TEMPLATE_PATH . "/assets/img/no_img.png";
 }

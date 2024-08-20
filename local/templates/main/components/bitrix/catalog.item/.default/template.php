@@ -56,9 +56,20 @@ if (isset($arResult['ITEM'])) {
                 <div class="product-mini-a__caption">
                     Цвет
                 </div>
-                <div class="product-mini-a__color"
-                     style="background: <?= $item['DISPLAY_PROPERTIES']['COLOR']['COLOR'] ?>;"
-                     title="<?= $item['DISPLAY_PROPERTIES']['COLOR']['DISPLAY_VALUE'] ?>"></div>
+                <?php
+                if ($item['DISPLAY_PROPERTIES']['COLOR']['VALUE']): ?>
+                    <?php
+                    foreach ($item['DISPLAY_PROPERTIES']['COLOR']['VALUE'] as $value): ?>
+                        <div class="product-mini-a__color"
+                             style="background: <?= $value['UF_COLOR1'] ?>;"
+                             title="<?= $value['UF_NAME'] ?>>"></div>
+                    <?php
+                    endforeach; ?>
+                <?php
+                else: ?>
+                    <div class="product-mini-a__color"></div>
+                <?php
+                endif; ?>
             </div>
         </div>
         <div class="product-mini-a__cell product-mini-a__cell_1-3">
@@ -85,18 +96,19 @@ if (isset($arResult['ITEM'])) {
                 </div>
             </div>
         </div>
-        <?php /*
-        <div class="product-mini-a__cell product-mini-a__cell_1-9">
-            <div class="product-mini-a__cell-inner">
-                <div class="product-mini-a__caption">
-                    Длина
-                </div>
-                <div class="product-mini-a__detail">
-                    <?= $item['DISPLAY_PROPERTIES']['LENGTH']['DISPLAY_VALUE'] ?>
-                </div>
-            </div>
-        </div>
-        */?>
+        <?php
+        /*
+               <div class="product-mini-a__cell product-mini-a__cell_1-9">
+                   <div class="product-mini-a__cell-inner">
+                       <div class="product-mini-a__caption">
+                           Длина
+                       </div>
+                       <div class="product-mini-a__detail">
+                           <?= $item['DISPLAY_PROPERTIES']['LENGTH']['DISPLAY_VALUE'] ?>
+                       </div>
+                   </div>
+               </div>
+               */ ?>
         <div class="product-mini-a__cell product-mini-a__cell_1-5">
             <div class="product-mini-a__cell-inner">
                 <div class="product-mini-a__caption">

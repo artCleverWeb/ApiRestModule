@@ -13,10 +13,12 @@ class Colors extends BaseRoute
     private $fillKeys = [
         'code' => 'UF_CODE',
         'name' => 'UF_NAME',
-        'color1' => 'UF_COLOR1',
-        'color2' => 'UF_COLOR2',
+        'color' => 'UF_COLOR1',
     ];
 
+    /**
+     * @throws \ErrorException
+     */
     protected function getTableName(): string
     {
         if (!defined('HL_TABLE_DIRECTORY_COLOR') || strlen(HL_TABLE_DIRECTORY_COLOR) == 0) {
@@ -31,11 +33,8 @@ class Colors extends BaseRoute
     {
         foreach ($this->arRequest as $key => $item) {
 
-            if ($item['color1'] == 'null') {
-                $item['color1'] = '';
-            }
-            if ($item['color2'] == 'null') {
-                $item['color2'] = '';
+            if ($item['color'] == 'null') {
+                $item['color'] = '';
             }
 
             if ($this->validateItem($item, $key) === true) {
@@ -85,9 +84,9 @@ class Colors extends BaseRoute
             return false;
         }
 
-        if (!empty($item['color1']) && $this->validateColorValue($item['color1']) !== true) {
+        if (!empty($item['color']) && $this->validateColorValue($item['color']) !== true) {
             $this->isWarning = true;
-            $this->WarninText .= "In the $key element, the color1 value does not satisfy the mask" . PHP_EOL;
+            $this->WarninText .= "In the $key element, the color value does not satisfy the mask" . PHP_EOL;
             return false;
         }
 

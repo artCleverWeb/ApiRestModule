@@ -46,6 +46,7 @@ class Good
     {
         $product = $this->productClass::getList([
             'filter' => ['XML_ID' => $code],
+            'select' => ['*', 'COLOR'],
             'cache' => [
                 'ttl' => 600
             ],
