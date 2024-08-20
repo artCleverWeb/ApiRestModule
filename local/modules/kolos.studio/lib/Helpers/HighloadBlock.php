@@ -7,6 +7,7 @@ use Bitrix\Main\SystemException;
 use CUserFieldEnum;
 use CUserTypeEntity;
 
+
 class HighloadBlock extends Base
 {
     protected $hlBlock;
@@ -197,7 +198,10 @@ class HighloadBlock extends Base
     {
         $result = [];
 
-        $property = CUserTypeEntity::GetList([], ['ENTITY_ID' => 'HLBLOCK_' . $this->getHlBlockId(), 'FIELD_NAME' => $ufName])->Fetch();
+        $property = CUserTypeEntity::GetList(
+            [],
+            ['ENTITY_ID' => 'HLBLOCK_' . $this->getHlBlockId(), 'FIELD_NAME' => $ufName]
+        )->Fetch();
 
         if ($property && $property['USER_TYPE_ID'] === 'enumeration') {
             $enumList = CUserFieldEnum::GetList([], ['USER_FIELD_ID' => $property['ID']]);
@@ -210,5 +214,24 @@ class HighloadBlock extends Base
         } else {
             return false;
         }
+    }
+
+    public function getFromCache(array $params = []): array
+    {
+        $result = [];
+
+        $obCache = new \CPHPCache;
+
+        $identCache = $this->getHlBlockId() . "_" . md5(implode('', $params));
+
+        if ($obCache->InitCache(360000, $identCache, "/" . SITE_ID . "/getFromCacheHL")) {
+            $result = $obCache->GetVars();
+        } elseif ($obCache->StartDataCache()) {
+            $result = $this->find($params);
+
+            $obCache->EndDataCache($result);
+        }
+
+        return $result;
     }
 }

@@ -154,8 +154,11 @@ $isCheked = false;
                                                        onclick="smartFilter.click(this)"
                                                 />
                                                 <span class="label-button__text">
-                                                <?= $ar["VALUE"]; ?>
-                                            </span>
+                                                    <?php if($arItem["CODE"] == 'COLOR'):?>
+                                                        <div class="product-mini-a__color" style="background: <?= $arResult['COLORS'][$ar["URL_ID"]] ?? '' ?>;"></div>
+                                                    <?php endif;?>
+                                                    <?= $ar["VALUE"]; ?>
+                                                </span>
                                             </label>
                                         </div>
                                     <?php

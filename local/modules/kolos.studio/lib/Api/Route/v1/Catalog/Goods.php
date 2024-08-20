@@ -80,7 +80,7 @@ class Goods extends BaseRoute
 
                             if ($keyProp == 'colorCode') {
                                 $methodAdd = 'addTo' . $fieldName;
-                                
+
                                 if ($productClass->$methodGet()) {
                                     foreach ($productClass->$methodGet() as $valueObject) {
                                         $valueObject->delete();
